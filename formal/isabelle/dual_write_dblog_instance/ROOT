@@ -1,0 +1,11 @@
+session Dual_Write_DBLog_Instance = DBLog_Virtual_Cuts +
+  description "
+    The subordinated DBLog instance for the decoupled Dual-Write development
+    (ADR-007). The sole importer of DBLog_Virtual_Cuts: it exhibits a
+    wellformed DBLog run as one certified inhabitant of the virtual-cut-state
+    interface via a bridge lemma, demoting the DBLog prong of Result 3 to a
+    worked instance. Sorry-free and axiom-free over the imported base.
+  "
+  options [timeout = 600]
+  theories
+    DBLog_Instance

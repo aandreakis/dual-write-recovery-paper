@@ -1,0 +1,436 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{isabelle,isabellesym}
+\usepackage{amssymb}
+\usepackage{booktabs}
+
+% this should be the last package used
+\usepackage{pdfsetup}
+
+% urls in roman style, theory text in math-similar italics
+\urlstyle{rm}
+\isabellestyle{it}
+
+% ToC: widen the subsection number box and the right margin reserved for
+% page numbers (long generated headings otherwise collide with them).
+\makeatletter
+\renewcommand*\l@subsection{\@dottedtocline{2}{1.5em}{3.3em}}
+\renewcommand\@tocrmarg{4.2em}
+\makeatother
+
+% Generated theory text carries long unbreakable identifiers; allow
+% extra stretch before lines protrude into the margin.
+\emergencystretch=3em
+
+\begin{document}
+
+\title{Dual Writes and CDC Replay:\\
+  A Mechanized Crash-Safety Characterization}
+\author{Andreas Andreakis}
+\maketitle
+
+\begin{abstract}
+  This is the \emph{Dual Writes Complete} artifact, the machine-checked
+  Isabelle/HOL development behind a crash-safety characterization for dual
+  writes. The contained implementation session is named
+  \isa{Dual{\isacharunderscore}Write{\isacharunderscore}Core} for build
+  compatibility.
+
+  A dual write sends each update to two independent, non-atomic stores. This
+  entry studies the change-data-capture (CDC) setting --- the source database's
+  committed log is the authority, and a second downstream store is written
+  separately --- and turns the practitioner warning against dual writes into a
+  \emph{two-sided characterization} of cross-store crash-safety, then shows
+  observable crash-safety \emph{invariant} in everything about the delivered
+  stream but its scoped image. The development is self-contained over a
+  shared DBLog-free
+  \isa{Dual{\isacharunderscore}Write{\isacharunderscore}Layer0} parent (source
+  coordinates, histories, scope restriction, replay, and the shared
+  virtual-cut-state predicate), so the source-coordinate order is \emph{proved}
+  rather than assumed.
+
+  The characterization has four parts. \emph{Obstruction:} for a crash-closed,
+  refining implementation, reaching a durable divergent crash is equivalent to
+  reaching an \emph{exposable} scoped mismatch --- a total partition of the
+  implementation domain, not a one-sided impossibility --- and an effective
+  non-atomic source write on a monitored, in-interval key already reaches the
+  hazard. \emph{Construction:} the safe side is inhabited by a verified
+  non-atomic bounded-replay CDC relay whose single advertise discipline both
+  forces a bad crash at an unadvertised frontier and discharges no-mismatch as an
+  inductive invariant at every advertised one, with recovery healing by
+  non-atomic replay. \emph{Duality:} restricting to running frontiers, a
+  crash-closed, refining, running-start implementation is crash-safe if and only
+  if its downstream image equals the committed source-log image on scope at every
+  reachable running frontier; all three premises are load-bearing, each
+  counterexample-witnessed (refinement in both directions).
+  \emph{Completeness:} crash-safety depends only on the scoped store image ---
+  neither the acknowledgement/durability axis nor the delivery-order axis of the
+  delivered stream carries a stronger crash-safety notion. A certified
+  \emph{executable} decider settles a concrete schedule's bad-crash status at a
+  given frontier and key by kernel evaluation.
+
+  Supporting layers round out the development without extending the contribution
+  surface: the absence-shaped
+  \isa{asymmetric{\isacharunderscore}store} safety kernel and the operational
+  separable non-atomic completion theorem (the specializations the obstruction
+  generalizes); an AFP-facing valid-execution wrapper
+  (\isa{admissible{\isacharunderscore}dw{\isacharunderscore}exec{\isacharunderscore}trace});
+  the DBLog-free replay/CDC positive side (outbox/CDC segments, replay prefixes,
+  certified CDC tails); a pairwise fan-out lift over indexed downstream targets;
+  a bounded multi-key source-group lift; and delivery, crash-truncation, and
+  store-clock refinements. DBLog appears only as an optional companion witness,
+  checked in the separate session
+  \isa{Dual{\isacharunderscore}Write{\isacharunderscore}DBLog{\isacharunderscore}Instance}
+  by citation to the
+  \isa{DBLog{\isacharunderscore}Virtual{\isacharunderscore}Cuts}
+  development~\cite{andreakis2026artifact}; it is not imported or re-derived
+  inside \isa{Dual{\isacharunderscore}Write{\isacharunderscore}Core}.
+
+  Soundness throughout is scoped-state equality at the chosen frontier: per-key
+  in the core theorems, and bounded source-group invariant violation in the
+  multi-key layer. It is not a claim of general transactional atomicity,
+  serializability, isolation, or multidatabase atomic commitment, and the
+  obstruction is a crash-durability fact rather than an FLP-style
+  asynchronous-consensus result. Every theorem is conditional on the premises
+  stated in its statement: the development does not claim that all systems called
+  dual writes fail, nor that production CDC runtimes, exactly-once delivery,
+  brokers, or retries are verified here. The development is sorry-free and
+  axiom-free, the elevated headline theorems are certified oracle-free, and the
+  main classes are inhabited by closed-form witnesses, so no result is vacuously
+  true.
+\end{abstract}
+
+\tableofcontents
+
+\newpage
+
+\section*{Entry overview}
+\addcontentsline{toc}{section}{Entry overview}
+
+\subsection*{The setting}
+
+The original DBLog change-data-capture framework~\cite{andreakis2020dblog}
+and its theory~\cite{andreakis2026theoretical} treat the source database's
+committed change log as the single authority and reconstruct a
+replay-equivalent snapshot of a live scope from it. This entry asks what
+happens when, in addition, application code writes the same update to a
+\emph{second} store --- the dual-write anti-pattern. The committed log
+(\isa{log{\isacharunderscore}image}) remains the authority; the downstream
+\isa{store{\isadigit{2}}} is written independently and non-atomically. State
+is measured through source-coordinate frontiers. For the downstream, a frontier
+is an applied or advertised source offset; the store-clock layer additionally
+allows an independent downstream-local clock carrier linked to such offsets by a
+faithful acknowledgement relation. A bad crash prefix may catch either durable
+side ahead of the other: the mechanized witnesses cover the old source-first
+shape, a downstream-first stale-update shape, and a source-first cross-axis
+offset-lag shape.
+
+The shared parent theories
+(\isa{Source{\isacharunderscore}Coordinates}, \isa{Source{\isacharunderscore}History},
+\isa{Scope}, \isa{Replay}, and
+\isa{Virtual{\isacharunderscore}Cut{\isacharunderscore}State}) are the DBLog-free
+Layer-0 substrate --- source coordinates, histories, scope restriction, replay,
+and the shared virtual-cut-state predicate --- on which the dual-write content
+is built. \isa{Dual{\isacharunderscore}Write{\isacharunderscore}Core}
+contains the abstract crash-divergence kernel and replay/log-derived exclusion
+results. \isa{Dual{\isacharunderscore}Write{\isacharunderscore}Execution} is the
+main operational proof line: it defines the state-carrying small-step semantics,
+the admissible trace wrapper, the separable non-atomic completion classes, and
+the crash-closed concrete bad-crash theorem. The elevated results are carried by
+eight additive theories over that line:
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Partition} (the two-sided
+crash partition, the inherent-unsafety corollary, and the subsumption of the
+structured routes),
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Relay} (the verified
+non-atomic bounded-replay CDC relay),
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Converse} (the image-level
+crash-safety biconditional),
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Premise{\isacharunderscore}Tightness}
+with
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Refinement{\isacharunderscore}Tightness}
+(counterexample witnesses for the biconditional's premises --- crash-closure
+by a drop-fails witness, refinement in both directions),
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Frontier{\isacharunderscore}Seam}
+(the advertised-frontier seam: one contract carrying both the safe and the
+unsafe verdict), and
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Image{\isacharunderscore}Completeness}
+with
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Order{\isacharunderscore}Completeness}
+(the durability and delivery-order axes carry no stronger crash-safety notion).
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Decider} is a certified
+executable point decider for a concrete schedule.
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Admissibility{\isacharunderscore}Hardening}
+proves that the admissible wrapper is a proper restriction of the raw trace
+relation and that each top-level wellformed-state conjunct is load-bearing.
+\isa{Outbox{\isacharunderscore}Continuation} and
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Replay{\isacharunderscore}Safety}
+contain the DBLog-free outbox/CDC and replay-derived positive side.
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Fanout} is an additive
+pairwise lift over indexed downstream targets; it does not introduce an
+N-target scheduler or atomic commit across targets.
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Multikey} is an additive
+source-group lift: it proves cross-key invariant violation under crash-prefix
+partial materialization and downstream-local durable loss, while recovering the
+ordinary per-key theorem as the singleton-group case.
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Characterization} packages the
+source-first crash-capability decomposition and the shared-atomic-commit safe
+class, and
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Recovery},
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Delivery{\isacharunderscore}Realism},
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Crash{\isacharunderscore}Truncation}, and
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Store{\isacharunderscore}Clocks} add
+recovery/redelivery, delivery-fault, durable-boundary, and per-store-clock
+refinements.
+
+\subsection*{What is proved}
+
+The four headline results form a single arc; the older kernel and the additive
+layers are the scaffolding they stand on. Theorem names are collected in the
+result-to-theorem map below.
+
+\paragraph{Obstruction --- the crash partition.} The safety kernel is the
+absence-shaped \isa{asymmetric{\isacharunderscore}store} locale (if the
+committed-log authority has advanced by a crash frontier while the downstream
+still lags there, the two stores disagree there), and the operational negative
+headline turns that premise-close pattern into a state-carrying execution
+theorem: a crash-closed implementation admitting a separable, non-atomic
+dual-write completion has a concrete crash trace with an observable mismatch.
+The partition sharpens both into a biconditional over the whole domain of
+crash-closed, refining implementations: reaching a reachable observable bad crash
+is equivalent to reaching an \emph{exposable} scoped mismatch --- a reachable
+state that disagrees with the committed-log image on a scoped key at an
+in-interval frontier and is either still running or already crashed exactly
+there. The two-armed disjunct makes the equivalence \emph{total}: it absorbs the
+already-crashed initial-mismatch class that defeats any ``reach a running gap,
+then crash'' phrasing. A follow-up shows the unsafe pole is easy to reach --- any
+faithful, crash-closed implementation that performs an \emph{effective}
+non-atomic source write on a monitored, in-interval key reaches the exposable
+region, and hence can suffer an observable bad crash. The boundary is
+effectiveness, not scope size, and the implication is one-directional.
+
+\paragraph{Construction --- the verified relay.} The safe side is not merely a
+complement; it is exhibited. A non-atomic bounded-replay relay drives its
+downstream by a scope- and frontier-bounded filter of the committed source log.
+The crux is that this bounded replay is source-image-equivalent to the full log
+on scope at the advertised frontier, and it has no one-line proof: it is a
+visibility argument over two different lists. A single advertise discipline then
+does two jobs at once --- it makes ``no observable mismatch'' a \emph{discharged
+inductive invariant} at every advertised frontier, and it \emph{forces} a
+reachable observable bad crash in the unadvertised gap above the advertised
+frontier. Recovery closes the loop by a non-atomic bounded replay that heals the
+scoped image through replay, provably distinct from a wholesale atomic copy of
+the source history.
+
+\paragraph{Duality --- crash-safety is image-faithfulness.} Restricting to
+running frontiers turns the partition into a clean biconditional stated purely in
+terms of the store image: a crash-closed, refining implementation whose initial
+state is running is crash-safe if and only if it is
+\emph{running-image-faithful} --- its downstream image equals the committed
+source-log image on scope at every reachable running frontier. The backward
+direction rests on one elementary new ingredient, a running-predecessor lemma for
+reachable crashed states. All three premises are load-bearing:
+crash-closure by a genuine drop-fails witness (a running-start,
+non-crash-closed, safe-yet-image-unfaithful implementation), running-start by the
+already-crashed initial-mismatch class, and refinement
+(witnessed in both directions by
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Refinement{\isacharunderscore}Tightness}:
+safe-yet-unfaithful and faithful-yet-unsafe non-refining implementations).
+When we call the biconditional an optimality result we mean image-tightness, not
+minimality of encoding: safety forces the downstream image on scope, not the
+relay's list-level delivery discipline.
+
+\paragraph{Completeness --- crash-safety reads only the scoped image.} The
+characterization is stated at the level of the scoped store image, and this is
+not a modeling shortcut. Observable mismatch reads the delivered history only
+through its scoped image, so any change to the delivered stream that preserves
+that image --- reordering, multiplicity, extra out-of-scope events --- is
+invisible to crash-safety. Concretely, neither the acknowledgement/durability
+axis nor the delivery-order axis carries a second, stronger crash-safety notion:
+each collapses to the image or reads a field crash-safety never touches. Within
+this model, observable crash-safety is thus invariant in everything about the
+delivered stream but its scoped image, with the two axes as case studies. This
+is a
+completeness statement \emph{for crash-safety in this execution model}, not a
+claim that no richer model --- irreversible external effects above all --- could
+carry more.
+
+\paragraph{An executable decider.} For a concrete schedule the bad-crash
+question is decidable by computation: the small-step semantics is deterministic
+and each state field is a fold of the label list, so the run is packaged into an
+executable state function proved to agree with the relational semantics, and the
+bad-crash status at a given frontier and key is a total decision function proved
+correct against the relational predicate and tied to divergence. On the running
+example it returns true for a source write crashed before the downstream catches
+up and false for the same update without the crash --- both discharged by kernel
+evaluation, not an external oracle. This is deliberately a \emph{point} decider,
+for a given frontier and key, which is all the partition's per-frontier statement
+needs.
+
+\paragraph{Positive replay side and additive layers.} The DBLog-free positive
+side records that a downstream which is replay-derived at an advertised frontier
+has no scoped mismatch there, with pure outbox/CDC segments, replay prefixes, and
+certified CDC tails as constructional certificates for the replay/store-equality
+premise; the older
+\isa{log{\isacharunderscore}derived{\isacharunderscore}excludes{\isacharunderscore}asymmetric{\isacharunderscore}store}
+theorem remains as the class-level disjointness statement. A pairwise fan-out
+layer keeps one source authority and an indexed family of downstream targets, so
+fan-out divergence is exactly the existence of a divergent target projection
+while fan-out replay/log-derived safety requires every selected target
+projection to satisfy the positive equality premise. A multi-key layer groups
+keys on the same authority and proves that a crash-prefix partial materialization
+can violate a stated cross-key invariant, recovering the ordinary per-key theorem
+as the singleton-group case. Delivery, crash-truncation, and store-clock theories
+make the pending channel, durable crash boundary, and downstream observation
+clock more realistic without changing the kernel.
+
+\paragraph{Optional DBLog companion.} A well-formed DBLog run is exhibited as one
+subordinated certified inhabitant of the shared virtual-cut-state interface, in
+the companion session
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}DBLog{\isacharunderscore}Instance}
+--- the sole importer of the
+\isa{DBLog{\isacharunderscore}Virtual{\isacharunderscore}Cuts} base --- closed
+\emph{by citation} to that development's soundness result, not re-proved. The
+event-constructor filter \isa{cdc{\isacharunderscore}only} separates the two
+prongs, and a distinctness pair shows the outbox and DBLog inhabitants genuinely
+differ; both refer to the same
+\isa{virtual{\isacharunderscore}cut{\isacharunderscore}state} constant imported
+from \isa{Dual{\isacharunderscore}Write{\isacharunderscore}Layer0}.
+
+\subsection*{Scope of the claims}
+
+Soundness means scoped-state equality at the chosen frontier: per-key in the
+core theorems, and bounded source-group invariant violation in
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Multikey}. No general
+transactional atomicity, serializability, isolation, or multidatabase atomic
+commit protocol is modelled or claimed.
+The obstruction is a shallow durability fact --- authority committed early,
+downstream late, crash in between, hence disagreement at the crash --- and is
+\emph{not} an FLP-style asynchronous-consensus impossibility. The
+\isa{asymmetric{\isacharunderscore}store} premises fix value fidelity at
+completion, so the divergence they force is a \emph{transient} lag across the
+crash, not a permanent value mismatch. The duality biconditional and its
+completeness are stated at the level of the scoped store image; the image-tightness
+of the safe side does \emph{not} force the relay's list-level delivery
+discipline, only its image consequence. The authority and crash frontiers remain
+source coordinates; downstream-local clocks are interpreted only through the
+faithful source-offset relation, not as arbitrary progress metrics. Fan-out is
+pairwise: targets are compared independently with the single authority image, and
+no target-to-target scheduler, all-targets atomic agreement, or 2PC/coordinator
+protocol is modeled or claimed. The multi-key layer is likewise not a
+global-transaction theorem: it has no autonomous database participants, votes,
+prepared states, or coordinator. Every theorem is
+conditional on the premises stated in its statement. The committed-log authority
+\isa{log{\isacharunderscore}image} is materialized from the protocol base
+\isa{pbase}, so stale updates and deletes over an existing database state are
+first-class examples rather than empty-genesis special cases.
+
+\subsection*{Trust base}
+
+The development declares no \isa{axiomatization} and no \isa{consts}, and no
+\isa{sorry}; it builds under
+\isa{quick{\isacharunderscore}and{\isacharunderscore}dirty}~\isa{=}~false, and the
+elevated headline theorems are additionally certified oracle-free by a dependency
+probe over their proof terms. Its
+  substrate is the shared DBLog-free \isa{Dual{\isacharunderscore}Write{\isacharunderscore}Layer0}
+  parent, in which the source-coordinate type is a \isa{typedef} over the
+  naturals and its order is \emph{proved} --- so nothing about the coordinate
+  order is assumed. The
+protocol carrier is a record; the negative and positive classes are predicates,
+locales, and execution certificates over ordinary HOL definitions, all inhabited
+by closed-form witnesses. The side-parametric completion class is witnessed by
+both source-first examples and a downstream-first stale-update completion, and
+\isa{admissible{\isacharunderscore}dw{\isacharunderscore}exec{\isacharunderscore}trace}
+packages wellformed executions without adding axioms. The wrapper is not merely
+a name for the raw relation:
+\isa{admissible{\isacharunderscore}wrapper{\isacharunderscore}is{\isacharunderscore}nontrivial}
+exhibits a wellformed-start raw trace that admissibility rejects, an
+out-of-order raw source trace rejected by the same wrapper, and drop-one
+negative controls for the history, pending/enqueued, and acked/source conjuncts
+of \isa{wellformed{\isacharunderscore}exec{\isacharunderscore}state}. The elevated
+biconditional's premises are load-bearing: crash-closure by a falsifying witness
+(\isa{crash{\isacharunderscore}closed{\isacharunderscore}is{\isacharunderscore}load{\isacharunderscore}bearing})
+in
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Premise{\isacharunderscore}Tightness};
+refinement by falsifying witnesses in both directions
+(\isa{refinement{\isacharunderscore}drop{\isacharunderscore}falsifies{\isacharunderscore}forward},
+\isa{refinement{\isacharunderscore}drop{\isacharunderscore}falsifies{\isacharunderscore}forward{\isacharunderscore}exec{\isacharunderscore}type},
+\isa{refinement{\isacharunderscore}drop{\isacharunderscore}falsifies{\isacharunderscore}backward})
+in
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Refinement{\isacharunderscore}Tightness},
+with the non-falsifying non-refining control
+(\isa{refining{\isacharunderscore}structurally{\isacharunderscore}required{\isacharunderscore}in{\isacharunderscore}converse})
+retained; and running-start witnessed by
+\isa{running{\isacharunderscore}start{\isacharunderscore}is{\isacharunderscore}load{\isacharunderscore}bearing}
+in \isa{Dual{\isacharunderscore}Write{\isacharunderscore}Converse};
+so no headline result is vacuously true. The relay reaches both a safe advertised
+frontier and an unsafe crashed frontier from the same run, so the safe and unsafe
+poles are both inhabited.
+The execution relation also has a bounded determinism theorem:
+\isa{dw{\isacharunderscore}exec{\isacharunderscore}trace{\isacharunderscore}deterministic}
+says that a fixed start state and fixed label list have a unique final state.
+It is used as trace-bookkeeping in the operational bridge, not as a scheduling
+or distributed-agreement assumption.
+The operational definitions themselves are stress-tested in
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Operational{\isacharunderscore}Definition{\isacharunderscore}Audit}:
+\isa{observable{\isacharunderscore}mismatch{\isacharunderscore}definition{\isacharunderscore}conjuncts{\isacharunderscore}load{\isacharunderscore}bearing},
+\isa{crash{\isacharunderscore}closed{\isacharunderscore}definition{\isacharunderscore}conjuncts{\isacharunderscore}load{\isacharunderscore}bearing},
+and
+\isa{source{\isacharunderscore}first{\isacharunderscore}load{\isacharunderscore}bearing{\isacharunderscore}side{\isacharunderscore}conditions{\isacharunderscore}have{\isacharunderscore}negative{\isacharunderscore}controls}
+give closed witnesses showing the load-bearing conjuncts bite.
+The development is distributed under the BSD 3-Clause license.
+
+\subsection*{Result-to-theorem map}
+
+\begin{center}\small
+\begin{tabular}{@{}l p{0.66\textwidth}@{}}
+\toprule
+Result & Theorems in this AFP entry (theory) \\
+\midrule
+Obstruction (crash partition) & \isa{crash{\isacharunderscore}closed{\isacharunderscore}diverges{\isacharunderscore}iff{\isacharunderscore}reaches{\isacharunderscore}exposable{\isacharunderscore}scoped{\isacharunderscore}mismatch}, \isa{crash{\isacharunderscore}closed{\isacharunderscore}no{\isacharunderscore}exposable{\isacharunderscore}mismatch{\isacharunderscore}iff{\isacharunderscore}never{\isacharunderscore}diverges}, \isa{effective{\isacharunderscore}nonatomic{\isacharunderscore}source{\isacharunderscore}write{\isacharunderscore}reaches{\isacharunderscore}exposable{\isacharunderscore}scoped{\isacharunderscore}mismatch} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Partition}) \\
+Construction (verified relay) & \isa{replay{\isacharunderscore}down{\isacharunderscore}hist{\isacharunderscore}image{\isacharunderscore}on{\isacharunderscore}scope}, \isa{relay{\isacharunderscore}bounded{\isacharunderscore}replay{\isacharunderscore}no{\isacharunderscore}mismatch}, \isa{relay{\isacharunderscore}bounded{\isacharunderscore}replay{\isacharunderscore}reconcile{\isacharunderscore}effective} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Relay}) \\
+Duality (image-level converse) & \isa{safe{\isacharunderscore}iff{\isacharunderscore}running{\isacharunderscore}image{\isacharunderscore}faithful} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Converse}) \\
+Premise tightness & \isa{crash{\isacharunderscore}closed{\isacharunderscore}is{\isacharunderscore}load{\isacharunderscore}bearing}, \isa{refining{\isacharunderscore}structurally{\isacharunderscore}required{\isacharunderscore}in{\isacharunderscore}converse} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Premise{\isacharunderscore}Tightness}); \isa{refinement{\isacharunderscore}drop{\isacharunderscore}falsifies{\isacharunderscore}forward}, \isa{refinement{\isacharunderscore}drop{\isacharunderscore}falsifies{\isacharunderscore}forward{\isacharunderscore}exec{\isacharunderscore}type}, \isa{refinement{\isacharunderscore}drop{\isacharunderscore}falsifies{\isacharunderscore}backward} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Refinement{\isacharunderscore}Tightness}) \\
+Completeness (crash-safety reads only the scoped image) & \isa{observable{\isacharunderscore}mismatch{\isacharunderscore}depends{\isacharunderscore}only{\isacharunderscore}on{\isacharunderscore}down{\isacharunderscore}image} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Image{\isacharunderscore}Completeness}); \isa{image{\isacharunderscore}faithful{\isacharunderscore}invariant{\isacharunderscore}under{\isacharunderscore}key{\isacharunderscore}sub{\isacharunderscore}agreement} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Order{\isacharunderscore}Completeness}) \\
+Executable decider & \isa{schedule{\isacharunderscore}bad{\isacharunderscore}crash{\isacharunderscore}at{\isacharunderscore}correct}, \isa{schedule{\isacharunderscore}bad{\isacharunderscore}crash{\isacharunderscore}at{\isacharunderscore}sound} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Decider}) \\
+\midrule
+Safety kernel & \isa{mismatch{\isacharunderscore}at}, \isa{diverges{\isacharunderscore}iff{\isacharunderscore}s{\isadigit{2}}{\isacharunderscore}neq{\isacharunderscore}log{\isacharunderscore}image}, \isa{asymmetric{\isacharunderscore}store{\isacharunderscore}diverges{\isacharunderscore}at{\isacharunderscore}crash}, \isa{crash{\isacharunderscore}mismatch{\isacharunderscore}class{\isacharunderscore}diverges} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Core}) \\
+Admissible execution layer & \isa{wellformed{\isacharunderscore}exec{\isacharunderscore}state}, \isa{admissible{\isacharunderscore}dw{\isacharunderscore}exec{\isacharunderscore}trace}, \isa{admissible{\isacharunderscore}dw{\isacharunderscore}exec{\isacharunderscore}trace{\isacharunderscore}imp{\isacharunderscore}dw{\isacharunderscore}exec{\isacharunderscore}trace}, \isa{dw{\isacharunderscore}exec{\isacharunderscore}trace{\isacharunderscore}deterministic} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Execution}); \isa{admissible{\isacharunderscore}wrapper{\isacharunderscore}is{\isacharunderscore}nontrivial}, \isa{wellformed{\isacharunderscore}exec{\isacharunderscore}state{\isacharunderscore}conjuncts{\isacharunderscore}load{\isacharunderscore}bearing} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Admissibility{\isacharunderscore}Hardening}) \\
+Negative headline (bad-crash trace) & \isa{separable{\isacharunderscore}non{\isacharunderscore}atomic{\isacharunderscore}crash{\isacharunderscore}closed{\isacharunderscore}dual{\isacharunderscore}write{\isacharunderscore}implementation{\isacharunderscore}has{\isacharunderscore}concrete{\isacharunderscore}bad{\isacharunderscore}crash{\isacharunderscore}execution}, \isa{dual{\isacharunderscore}write{\isacharunderscore}concrete{\isacharunderscore}bad{\isacharunderscore}crash{\isacharunderscore}execution}, \isa{dual{\isacharunderscore}write{\isacharunderscore}admissible{\isacharunderscore}concrete{\isacharunderscore}bad{\isacharunderscore}crash{\isacharunderscore}execution} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Execution}) \\
+Replay/CDC positive side & \isa{log{\isacharunderscore}derived{\isacharunderscore}excludes{\isacharunderscore}asymmetric{\isacharunderscore}store}, \isa{replay{\isacharunderscore}derived{\isacharunderscore}no{\isacharunderscore}mismatch}, \isa{execution{\isacharunderscore}cdc{\isacharunderscore}replay{\isacharunderscore}prefix{\isacharunderscore}no{\isacharunderscore}observable{\isacharunderscore}mismatch}, \isa{certified{\isacharunderscore}cdc{\isacharunderscore}tail{\isacharunderscore}no{\isacharunderscore}observable{\isacharunderscore}mismatch} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Replay{\isacharunderscore}Safety}); \isa{outbox{\isacharunderscore}continuation{\isacharunderscore}witness}, \isa{outbox{\isacharunderscore}prong{\isacharunderscore}cdc{\isacharunderscore}only} (\isa{Outbox{\isacharunderscore}Continuation}) \\
+Pairwise fan-out & \isa{fanout{\isacharunderscore}diverges{\isacharunderscore}on{\isacharunderscore}iff{\isacharunderscore}some{\isacharunderscore}target{\isacharunderscore}diverges}, \isa{fanout{\isacharunderscore}log{\isacharunderscore}derived{\isacharunderscore}on{\isacharunderscore}no{\isacharunderscore}divergence}, \isa{fanout{\isacharunderscore}log{\isacharunderscore}derived{\isacharunderscore}on{\isacharunderscore}excludes{\isacharunderscore}target{\isacharunderscore}asymmetric{\isacharunderscore}store} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Fanout}) \\
+Multi-key groups & \isa{partial{\isacharunderscore}group{\isacharunderscore}materialization{\isacharunderscore}violates{\isacharunderscore}cross{\isacharunderscore}key{\isacharunderscore}invariant}, \isa{multikey{\isacharunderscore}partial{\isacharunderscore}cross{\isacharunderscore}key{\isacharunderscore}invariant{\isacharunderscore}violation}, \isa{downstream{\isacharunderscore}loss{\isacharunderscore}singleton{\isacharunderscore}recovers{\isacharunderscore}per{\isacharunderscore}key} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Multikey}) \\
+Store-clock observation & \isa{faithful{\isacharunderscore}source{\isacharunderscore}offset{\isacharunderscore}ack}, \isa{durable{\isacharunderscore}cross{\isacharunderscore}axis{\isacharunderscore}acked{\isacharunderscore}bad{\isacharunderscore}crash{\isacharunderscore}enabled{\isacharunderscore}extend}, \isa{old{\isacharunderscore}single{\isacharunderscore}axis{\isacharunderscore}model{\isacharunderscore}is{\isacharunderscore}identity{\isacharunderscore}special{\isacharunderscore}case} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Store{\isacharunderscore}Clocks}) \\
+Source-first capability and atomic-commit safe class & \isa{source{\isacharunderscore}first{\isacharunderscore}crash{\isacharunderscore}capability{\isacharunderscore}crash{\isacharunderscore}closed{\isacharunderscore}implementation{\isacharunderscore}has{\isacharunderscore}concrete{\isacharunderscore}bad{\isacharunderscore}crash{\isacharunderscore}execution}, \isa{source{\isacharunderscore}downstream{\isacharunderscore}history{\isacharunderscore}aligned{\isacharunderscore}no{\isacharunderscore}divergence}, \isa{shared{\isacharunderscore}atomic{\isacharunderscore}commit{\isacharunderscore}step{\isacharunderscore}crash{\isacharunderscore}after{\isacharunderscore}commit{\isacharunderscore}no{\isacharunderscore}observable{\isacharunderscore}mismatch} (\isa{Dual{\isacharunderscore}Write{\isacharunderscore}Characterization}) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The DBLog prong lives in the companion session
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}DBLog{\isacharunderscore}Instance},
+which imports the
+\isa{DBLog{\isacharunderscore}Virtual{\isacharunderscore}Cuts} base; it is
+described above but its theory text is not part of this document. It is there
+that the key type carries a \isa{linorder} hypothesis, inherited through the
+base's canonical clean-prefix construction; every statement typeset here is
+class-free or monomorphic over \isa{nat}. The companion facts are
+\isa{virtual{\isacharunderscore}cut{\isacharunderscore}certifies{\isacharunderscore}dblog},
+\isa{wellformed{\isacharunderscore}dblog{\isacharunderscore}run{\isacharunderscore}no{\isacharunderscore}observable{\isacharunderscore}mismatch},
+and
+\isa{dblog{\isacharunderscore}prong{\isacharunderscore}not{\isacharunderscore}cdc{\isacharunderscore}only};
+they are machine-checked in
+\isa{Dual{\isacharunderscore}Write{\isacharunderscore}DBLog{\isacharunderscore}Instance},
+not in this core AFP entry.
+
+% generated text of all theories
+\input{session}
+
+% optional bibliography
+\bibliographystyle{abbrv}
+\bibliography{root}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

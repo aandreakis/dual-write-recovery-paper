@@ -1,0 +1,20 @@
+session Dual_Write_Schedule_Validator = Dual_Write_Core +
+  description "
+    The certified schedule-validator companion for the Dual-Write core: it
+    closes the landed point decider's totality gap (external review finding
+    F2). The landed executor state_of_labels evaluates blind label folds, so
+    schedule_bad_crash_at returns verdicts on label lists that form no
+    dw_exec_trace at all; its correctness theorems quantify over valid traces
+    only. This session adds a total step function proved equivalent to
+    dw_exec_step, its Kleisli fold proved equivalent to dw_exec_trace, and a
+    three-valued verdict (Invalid / Safe / Bad) that rejects exactly the
+    trace-less schedules and agrees with the landed decider on valid ones,
+    completing the schedule-level story the effect-tier decider delegates to
+    the store tier (gate ruling D-S5-2). Everything is code-exported to
+    Standard ML and the worked examples are kernel-evaluated (code_simp).
+    Additive companion session: the AFP-locked core is imported unchanged,
+    byte-untouched. Sorry-free and axiom-free over the imported base.
+  "
+  options [timeout = 600]
+  theories
+    Dual_Write_Schedule_Validator

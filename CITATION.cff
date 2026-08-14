@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+message: >-
+  If you refer to this work, please cite the paper. When the exact bytes of
+  the formal development matter, also cite the archived Zenodo version.
+title: >-
+  Machine-Checked Dual-Write Recovery from a Committed Log: paper sources
+  and Isabelle/HOL formal development
+abstract: >-
+  Information hub for the paper "Machine-Checked Dual-Write Recovery from a
+  Committed Log." Contains the paper sources as posted to arXiv and the
+  complete Isabelle/HOL development Dual_Write_Recovery, byte-identical to
+  its archived Zenodo version 1.0 deposit.
+type: software
+authors:
+  - family-names: Andreakis
+    given-names: Andreas
+    orcid: https://orcid.org/0009-0003-9025-9402
+version: "1.0"
+date-released: "2026-08-01"
+doi: 10.5281/zenodo.21734365
+repository-code: https://github.com/aandreakis/dual-write-recovery-paper
+url: https://arxiv.org/abs/2608.00501
+license:
+  - BSD-3-Clause
+  - CC-BY-4.0
+keywords:
+  - dual write
+  - crash recovery
+  - exactly-once delivery
+  - change data capture
+  - CDC
+  - outbox pattern
+  - idempotency
+  - fencing
+  - formal verification
+  - Isabelle/HOL
+  - interactive theorem proving
+preferred-citation:
+  type: article
+  title: Machine-Checked Dual-Write Recovery from a Committed Log
+  authors:
+    - family-names: Andreakis
+      given-names: Andreas
+      orcid: https://orcid.org/0009-0003-9025-9402
+  year: 2026
+  doi: 10.48550/arXiv.2608.00501
+  url: https://arxiv.org/abs/2608.00501
+  notes: arXiv:2608.00501v4 [cs.DB], 13 August 2026

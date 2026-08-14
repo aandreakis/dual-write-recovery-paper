@@ -1,0 +1,66 @@
+chapter AFP
+
+(* The transit-kernel session (owner authorization DECISIONS.md D-099, 2026-07-10):
+   the GREEN rung-3 spike (roads/program/spike_scratch/, commit 34ebaa6a) promoted
+   to THEOREMS OF RECORD, plus the WP2 fire-instance pullback.
+
+   Build (from the repo root):
+     isabelle build -j 8 -o quick_and_dirty=false \
+       -d dual_write_layer0 -d dual_write_core -d dual_write_effect \
+       -d dual_write_unified -d dual_write_transit Dual_Write_Transit
+*)
+
+session Dual_Write_Transit = Dual_Write_Unified +
+  description "
+    The abstract justification+delivery (transit) interface --- U8-style safety
+    (payload-duplicate-freedom + justification of everything accepted) proved
+    ONCE against an abstract accept+transit interface (locale transit_iface,
+    axioms T1 item-multiset non-increase + J1 justification append-stability,
+    theorem a_safety), and discharged on TWO delivery regimes:
+
+      - the fire-point instance (Road 2's regime): fire_transit = armed content
+        sits still or is discarded by a claim overwrite --- with the WP2
+        PULLBACK: every u_disciplined_trace of the landed unified machine is
+        tracked by an abstract run under the total definitional ledger
+        projection, making Road-2's U8 safety conclusion a COROLLARY of the
+        interface theorem (u8_safety_via_transit_interface).  The landed
+        u_fenced_multiwriter_discipline_safe REMAINS the theorem of record and
+        the pinned principal; the corollary is the bridge.
+
+      - the lossy/reordering wire instance (a self-contained sibling grammar
+        in the style of Road 1's transport axis; not the landed channel
+        machine of the effect tier --- no theorem relates the two):
+        wire_transit = arbitrary permutation + single-item removal, a
+        multi-writer fenced send/claim/arrive discipline on top, and the
+        theorem of record u8_multiwriter_over_wire with
+        strictly_ascending_source as the ONLY substantive premise (zombie
+        sends, loss, reordering all guard-free).  WP3 companions: the
+        grammar-local biting control DWT_Wire_Control (the guard-free grammar
+        variant admits a reachable duplicated ledger, so the ascending premise
+        is LOAD-BEARING --- premise minimality claimed nowhere) and the
+        witness battery DWT_Wire_Witnesses (multi-writer interleaving,
+        duplicate-zombie storm, adversarial reorder --- each a concrete
+        reachable run with the safety conclusion evaluated).
+
+    The completed-claim half over the wire (WP4, DWT_Wire_Completed, built
+    gate-first per WP4_DESIGN_GATE.md) exists ONLY in two fenced forms: the
+    arrival+currency-CONDITIONAL exactly-once (each premise with its own
+    load-bearing control) and the exists-extension re-drive healing theorem
+    (ability, not inevitability).  NO unconditional exactly-once /
+    at-least-once claim is made anywhere in this session; every exactly-once
+    mention is acceptance-ledger-scoped.  No 'settles', no
+    interface-optimality claim.  Additive by construction: fresh names
+    (collision-swept against the merged corpus, zero hits), a new session,
+    NO edit to any frozen session.
+  "
+  options [timeout = 600, document = false, quick_and_dirty = false]
+  sessions
+    "HOL-Library"
+  theories
+    DWT_Interface
+    DWT_Fire
+    DWT_Fire_Pullback
+    DWT_Wire
+    DWT_Wire_Control
+    DWT_Wire_Witnesses
+    DWT_Wire_Completed

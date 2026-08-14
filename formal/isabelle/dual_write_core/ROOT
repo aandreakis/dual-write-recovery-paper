@@ -1,0 +1,138 @@
+chapter AFP
+
+session Dual_Write_Core = Dual_Write_Layer0 +
+  description "
+    The Dual-Write Theorem: a self-contained study of dual writes in the
+    change-data-capture (CDC) setting. A dual write sends each update to two
+    independent, non-atomic stores; here the source database's committed log
+    is the authority and a second downstream store is written separately.
+
+    This is the DBLog-free core of the development. It stands on the shared
+    Dual_Write_Layer0 parent (source coordinates, histories, scope, replay,
+    and the virtual-cut-state predicate) rather than importing any downstream
+    run or certificate machinery, so the source-coordinate type is realised by
+    a conservative typedef and its order is proved, not axiomatized.
+
+    This core entry establishes the abstract mismatch/divergence safety kernel,
+    an AFP-facing admissible execution wrapper, the side-parametric
+    separable/non-atomic completion theorem, the crash-closed concrete
+    bad-crash trace theorem, admissibility non-vacuity checks, operational
+    definition-strength negative controls, delivery/crash-truncation
+    extensions, an offset-acknowledged per-store clock observation layer, a
+    pairwise one-source-many-downstreams fan-out lift, a multi-key/group
+    invariant divergence layer with a downstream-local crash-loss witness, and
+    the DBLog-free replay/CDC positive side. Dual_Write_Execution is the main operational
+    proof line; the older schedule-regression scaffold was intentionally
+    dropped from this refereed session surface.
+
+    (1) Crash divergence: the protocol kernel defines mismatch_at and divergence
+    from the committed-log image. The asymmetric_store theorem is retained as an
+    absence-shaped specialization of this kernel. The main execution theorem is
+    side-parametric: a crash-closed implementation that admits a separable,
+    non-atomic dual-write completion has a concrete crash trace with observable
+    source/downstream mismatch. The later delivery, crash-truncation, and
+    per-store-clock theories are additive refinements: store-clock observations
+    use an independent downstream clock carrier linked to source coordinates by
+    a total, functional, monotone offset-acknowledgement relation, and recover
+    the older single-frontier predicates as the identity-offset special case.
+    The fan-out theory keeps the same single authority and indexes downstream
+    targets; each target projection is an ordinary two-store protocol, so
+    fan-out divergence is exactly the existence of a divergent target
+    projection, while replay/log-derived safety requires every selected target
+    projection to satisfy the positive equality premise. It does not model a
+    multi-target scheduler or atomic commit across targets. The multi-key
+    layer then groups keys on the same source authority and proves that
+    crash-prefix partial materialization can violate a cross-key invariant
+    (the violation predicate requires distinct keys --- aliased keys reduce
+    to the per-key case); the
+    singleton case recovers the ordinary per-key mismatch theorem. It does not
+    introduce autonomous multidatabase participants, voting, a coordinator, or
+    an atomic-commit protocol.
+
+    (2) Replay safety: a downstream that satisfies the replay-derived/store
+    equality premise at an advertised frontier has no scoped mismatch there.
+    Pure outbox/CDC segments, replay prefixes, and certified CDC tails are
+    constructional ways to discharge this replay premise; log_derived exclusion
+    remains as the class-level boundary theorem.
+
+    (2') Two-sided characterization and its completeness: building on the replay
+    premise, the entry closes a two-sided crash-safety characterization and shows
+    observable crash-safety invariant in everything about the delivered stream
+    but its scoped image. A verified non-atomic bounded-replay CDC relay
+    (Dual_Write_Relay) is sufficient for crash-safety at every
+    occurrence-complete frontier; coordinate advertisement alone is not a
+    completeness certificate when occurrences tie. The matching image-level
+    converse (Dual_Write_Converse,
+    safe_iff_running_image_faithful) is necessary, so for a crash-closed,
+    refining, Running-start implementation crash-safety holds iff the downstream
+    image equals the committed-source-log image on scope at every reachable
+    running frontier. Dual_Write_Premise_Tightness and its sibling theory
+    Dual_Write_Refinement_Tightness certify that all three premises of that
+    characterization are counterexample-witnessed: crash-closure by a drop-fails
+    witness, Running-start by the already-crashed initial-mismatch class
+    (Dual_Write_Converse), and refinement in both directions (a
+    safe-yet-unfaithful and a faithful-yet-unsafe non-refining implementation).
+    Two additive completeness theories then check the two natural axes of the
+    delivered stream: neither the acknowledgement/durability axis
+    (Dual_Write_Image_Completeness) nor the delivery-order axis
+    (Dual_Write_Order_Completeness) carries a second, stronger characterization
+    --- observable crash-safety is invariant in everything about the delivered
+    stream but its scoped image.
+
+    (3) Optional DBLog companion: this core entry proves the DBLog-free
+    outbox/CDC and replay-safety prongs. The DBLog prong is a subordinated
+    worked instance checked only in the companion session
+    Dual_Write_DBLog_Instance, by citation to the DBLog_Virtual_Cuts result;
+    it is not imported or re-derived here. WS4a factors the Layer-0
+    virtual-cut-state predicate into Dual_Write_Layer0, so the DBLog and
+    Dual-Write prongs now refer to one imported Isabelle constant while this
+    core remains independent of DBLog run/certificate machinery.
+
+    Soundness throughout means scoped-state equality at the chosen frontier:
+    per-key in the core theorems, and bounded source-group invariant violation
+    in the multi-key layer. It never claims general transactional atomicity,
+    serializability, isolation, or a multidatabase atomic-commit protocol. The
+    impossibility is a crash-durability fact, not an FLP-style asynchronous-
+    consensus result. Every theorem is conditional on the premises stated in
+    its statement.
+
+    The development is sorry-free and axiom-free: it declares no axiomatization
+    or consts, and its one typedecl-free type introduction is a conservative
+    typedef. The protocol kernel, admissible traces, source-first and
+    downstream-first completion shapes, and replay-safety classes all have
+    closed-form witnesses; the admissible wrapper is a proper restriction of
+    the raw trace relation, each wellformed-state conjunct has a drop-one
+    negative control, and the operational definitions for observable mismatch,
+    crash closure, and source-first separated completion have closed
+    definition-strength controls, so no headline result is vacuously true.
+
+    Licensed under the BSD 3-Clause license (SPDX header on every theory).
+  "
+  options [timeout = 600, document = pdf, document_output = "output"]
+  theories
+    Dual_Write_Core
+    Dual_Write_Execution
+    Dual_Write_Admissibility_Hardening
+    Dual_Write_Operational_Definition_Audit
+    Outbox_Continuation
+    Dual_Write_Replay_Safety
+    Dual_Write_Characterization
+    Dual_Write_Partition
+    Dual_Write_Decider
+    Dual_Write_Recovery
+    Dual_Write_Delivery_Realism
+    Dual_Write_Crash_Truncation
+    Dual_Write_Store_Clocks
+    Dual_Write_Fanout
+    Dual_Write_Multikey
+    Dual_Write_Relay
+    Dual_Write_Converse
+    Dual_Write_Premise_Tightness
+    Dual_Write_Refinement_Tightness
+    Dual_Write_Image_Completeness
+    Dual_Write_Order_Completeness
+    Dual_Write_Frontier_Seam
+    Dual_Write_Defect_Regressions
+  document_files
+    "root.tex"
+    "root.bib"

@@ -1,0 +1,601 @@
+chapter AFP
+
+session Dual_Write_Effect = Dual_Write_Core +
+  description "
+    The emitted-effect tier (tier 2) of the dual-write development: a
+    conservative wrapper machine over the locked Dual_Write_Core execution
+    layer in which every downstream publish is an externally visible
+    EMISSION recorded in an append-only ledger, and recovery's re-drive is
+    itself emitting work driven by a persisted consumer cursor.
+
+    Dual_Write_Effect_Machine defines the wrapper state (durable core plus
+    emission ledger), the lifted step relation, the checkpointed emitting
+    re-drive reconcile (whose core action is literally the landed verified
+    relay reconcile), emission-time justification via fire-time stamps, and
+    the premature/duplicate hazard taxonomy with effect_unsafe as their
+    disjunction. Its two structural laws: the wrapper simulates the core
+    (every effect step projects to a landed core step), and effect_unsafe is
+    monotone along every step and every reconcile on stamp-bounded (hence
+    all reachable) states --- once unsafe, no continuation heals the ledger,
+    the designed anti-healing contrast to the landed store-heal theorems.
+    Disclosed model boundaries carried as in-theory text blocks: the
+    two-store reading (durable core vs the external world's received
+    effects), the persisted-consumer-cursor reading of the reconcile
+    parameter, the atomic big-step reconcile, and the skip asymmetry of
+    effect_unsafe (a disowned liveness axis).
+
+    Dual_Write_Effect_Witnesses banks the closed, designed-in boundary
+    certificates the tier's general theorems feed on: the equal-core
+    duplicate separation (the effect verdict is not a function of the core
+    or its image), the crash-heal-re-emit certified incident, the
+    safe/premature non-vacuity pair, four-corner independence of the image
+    and effect verdicts, the load-bearing stamp-invariant control, and the
+    core-invisible premature pair --- two reorderings of one three-step
+    window with literally equal final cores and opposite verdicts, so BOTH
+    effect hazards (not only duplicates) escape the durable store.
+
+    Dual_Write_Effect_Cyclic is the OPERATIONAL (cyclic) effect machine ---
+    the promoted primary (owner decision D5): the same wrapper extended
+    with a recovery-epoch counter and an explicit Recovered-to-Running
+    Resume rule, every emission stamped (prefix-length, epoch) at fire
+    time.  It carries the cyclic-specific facts the terminal machine
+    provably cannot express (a reachable post-recovery Running state with
+    a non-empty ledger; multi-crash duplicate amplification) and the
+    machine-checked simulation seam: a Resume step corresponds to no
+    landed core step, the priced reason tier-1 facts re-scope per epoch,
+    with the epoch-factorization primitives that re-scoping builds on.
+
+    Dual_Write_Effect_Dilemma carries THE HEADLINE LAW on the cyclic
+    machine: the recovery-information dilemma.  Its batch-agreement kernel
+    exhibits one designed-in equal-core, equal-epoch, divergent-ledger pair
+    of reachable effect-safe states that defeats every re-drive policy
+    unable to distinguish its members: the policy's own redrive heals every
+    scoped store mismatch on both, yet duplicates or goes premature on one
+    member or loses a committed effect on the other.  Store-measured
+    policies (every store-persisted cursor value --- subsumption
+    machine-checked --- and every store-side dedup filter) and
+    (core, epoch)-measured policies cannot distinguish the pair; a cursor
+    persisted outside the store that accurately tracks deliveries
+    distinguishes them (the members differ only in the emission ledger)
+    and so lies outside every class the dilemma defeats, on the
+    sink-reading side of the dichotomy; the sink-reading payload-delta policy
+    escapes (heals, stays effect-safe, loses nothing --- general form under
+    the named strictly-ascending-source premise, the audited statement's
+    unconsumed reachability premise dropped) and provably does not factor
+    through the store.  Exactly-once
+    effect recovery exists and requires reading the sink.
+
+    Dual_Write_Effect_Discipline carries the SAFE HALF of the slogan as a
+    for-all theorem (T2.8) on the cyclic machine: every trace whose
+    publishes are justified at fire time and fresh against the ledger, and
+    whose reconciles re-drive suffixes that are ledger-fresh and internally
+    distinct, ends effect-safe --- with Resume needing NO guard (a Resume
+    step preserves the ledger and the committed source history verbatim,
+    proved as an iff), a cycle-exercising non-vacuity witness (crash, heal,
+    resume, publish again in epoch 1), each guard witnessed load-bearing,
+    and the 2-premise slogan form refuted on this machine too.
+
+    Dual_Write_Effect_Segments is the SEGMENT FACTORIZATION INTERFACE of
+    the cyclic machine (the S4d foundation): a cyclic trace factors into
+    resume-free segments separated by Resume transitions; within a segment
+    every label step projects to a landed core step and every reconcile to
+    the landed relay reconcile, so the landed tier-1 corpus re-lands per
+    segment with its landed proofs cited verbatim.  A restatement carrier,
+    never an upgrade --- including the honest boundary theorem that
+    post-Resume segment starts are NOT init-like (a reachable epoch-1
+    Running segment start with a scoped mismatch is exhibited), and the
+    core-wellformedness reachability invariant.
+
+    Dual_Write_Effect_Recovery_Grammar re-reads the landed recovery
+    temporal grammar on the cyclic machine with every guard difference
+    disclosed: label-only fragments embed verbatim into the landed
+    grammar; reconcile-bearing segments relate semantically through the
+    landed effective-redelivery interface (the landed corpus itself
+    proves relay-replay and wholesale reconcile are different
+    transformers), so the landed convergence theorems re-land in every
+    epoch; Resume is image-inert, the observation-only persistence
+    negative strengthens across epochs, and the Recovered-heal corollary
+    restates along a Resume-crash-reconcile cycle at a disclosed
+    one-epoch cost.
+
+    The per-epoch re-landing wave (the S4d program over the segment
+    interface) comprises five theories, each a restatement carrier with
+    disclosed scope: Dual_Write_Effect_Segment_Boundaries (per-segment
+    terminality --- STRONGER identity-stutter form --- with the honest
+    Resume-crossing residue and the designed not-absorbing negative
+    control, plus the per-epoch running-start characterizations and their
+    load-bearing controls), Dual_Write_Effect_Converse (the
+    safe-iff-running-image-faithful family re-landed per segment over a
+    cyclic implementation record, with per-premise tightness controls and
+    the two-tier contrast disclosed: store-bad-effect-clean meets the
+    banked store-healed-effect-bad), Dual_Write_Effect_Relay (the relay
+    invariant re-founded at every post-Resume segment start via the
+    refilter lemma), Dual_Write_Effect_Completeness (the image and order
+    completeness axes per segment with cross-epoch stream concatenation
+    and per-segment negative controls), and Dual_Write_Effect_Tightness
+    (the terminal-witness transfer principle --- an epoch-0 witness IS a
+    cyclic witness --- plus per-epoch re-verification of the landed
+    premise-tightness controls including the refinement-tightness
+    witnesses).
+
+    Dual_Write_Effect_Suffix_Freshness packages suffix freshness honestly
+    (the T2.9 slot): soundness re-surfaces the discipline's reconcile
+    guard; the necessity direction is list bookkeeping (distinct-append
+    through the stamp projection) and says so in its own text; the
+    conditional iff is a supporting lemma; the theorem carrying the T2.9
+    designation is that iff instantiated at the banked loaded window,
+    shipped with per-conjunct violation controls, a pre-safety
+    load-bearing control, and an unsafe-stays-unsafe reconcile chain
+    showing the iff cannot be unconditioned.
+
+    Dual_Write_Effect_Exactly_Once carries T2.11: delivery completeness
+    defined as the literal complement of the dilemma's loss predicate,
+    exactly-once as effect-safety plus that DISCLOSED completeness
+    conjunct (the skip axis made an explicit component, a terminal-state
+    liveness stand-in); the folklore equation exactly-once =
+    at-least-once + idempotence landed twice at honest strengths --- a
+    premise-free payload-level iff over the idempotent consumer's
+    deduplicated view, and an instance-exactness iff consuming
+    strictly-ascending-source (with the equal-coordinate aliasing control
+    showing exactly where counting diverges); cursor lemmas; the positive
+    side (the sink-reading policy achieves exactly-once under the landed
+    escape premises, inhabited at the dilemma's own loss-side witness);
+    and the necessity face translated from the landed dilemma horn ---
+    exactly-once effect recovery exists and requires reading the sink,
+    the exactly-once READING of the headline law, not a new
+    impossibility.
+
+    Dual_Write_Effect_Decider carries T2.12, the two-tier executable
+    point evaluator (never a schedule-level executor): per-hazard
+    deciders with correctness iffs (near-definitional by design --- the
+    value is the pairing), the two-tier verdict function combining the
+    landed store-tier decider with the effect tier plus its correctness
+    and store-side soundness, verdict persistence and permanence along
+    traces, a computed witness battery spanning the four corners and the
+    dilemma's equal-core pair (whose two-tier verdicts are computably
+    indistinguishable --- the separation made executable), negative
+    controls (a stamp-blind rival decider is sound but incomplete --- it
+    passes a reachable premature state; the skip axis is
+    disclosed by verdict against the loss predicate), and an export-code
+    capstone matching the landed decider's bar exactly.
+
+    Dual_Write_Effect_Dichotomy is the post-freeze referee-proofing
+    addition (C2 decision D-C2-2): the dilemma pair is reachable via fully
+    disciplined traces (even systems obeying the safe discipline present
+    the indistinguishable pair to recovery); ledger-blindness of a
+    re-drive policy is provably THE SAME THING as (core, epoch)-
+    measurability (the wrapper record has exactly three fields), turning
+    the headline necessity into a literally exhaustive dichotomy: every
+    recovery policy either ignores the sink and is defeated, or reads it.
+
+    Dual_Write_Effect_Terminal_Inexpressibility is the theory-backlog
+    addition that makes the cyclic promotion's rationale (owner decision
+    D5) a theorem, proved on the TERMINAL branch over the terminal
+    witnesses alone: at every reachable terminal-machine state whose
+    status is Crashed --- the states every recovery transition of that
+    machine fires from --- the ledger's payload projection literally
+    equals the core's durable downstream history, hence NO pair of
+    reachable crashed states with equal cores and payload-divergent
+    ledgers exists at any machine parameters: the dilemma pair's
+    certificate shape is terminally inexpressible, because the sole
+    ledger/down-history divergence source (the emitting reconcile) ends
+    in the terminally absorbing Recovered status, past every further
+    crash.  The payload-level qualifier is load-bearing and witnessed
+    in-theory: stamp-divergent, payload-equal equal-core crashed pairs
+    ARE reachable, so the negative is stated at payload level and says
+    so.
+
+    Dual_Write_Effect_Sink_Delta_Idempotence is the theory-backlog
+    addition on the cyclic branch that softens the disclosed atomic
+    big-step reconcile boundary for the positive side at the FUNCTION
+    level, with no machine extension: modeling the ledger footprint of
+    an interrupted re-drive --- entries whose payloads form a prefix of
+    the sink-computed batch, a MODELED INTERMEDIATE shape (a crash
+    during a re-drive remains inexpressible on the machine; no new
+    rule, no reachability claim for such states) --- re-computing
+    sink_delta there under the named strictly-ascending-source premise
+    emits exactly the remainder of the batch, stamp- and
+    epoch-agnostic; the partial state stamped as the landed re-drive
+    rule stamps is moreover still effect-safe, and after the rule's own
+    completed sink-delta redrive the recomputed delta is empty with no
+    premise at all.  The ascending premise is witnessed load-bearing at
+    a concrete WF-legal equal-coordinate control state where the
+    take-one prefix payload-blocks both occurrences of a duplicated
+    payload and the recomputation silently starves a committed
+    instance.  The priced small-step reconcile contingency remains the
+    machine-level answer; this theory is the function-level one.
+
+    Dual_Write_Effect_Cyclic_Stamps_Control is the theory-backlog
+    addition that restates the load-bearing stamp-invariant control on
+    the promoted cyclic machine (control-set symmetry across the two
+    branches): at a state outside the stamp invariant --- an emission
+    stamped beyond the committed source prefix --- one source-commit
+    label step, injected into the same label/reconcile/Resume wrapper
+    the cyclic monotonicity theorem consumes, retroactively justifies
+    the over-stamped entry and heals effect_unsafe, so the
+    stamps_bounded premise of the cyclic monotonicity family is
+    genuinely load-bearing.  The control state is off the reachable
+    set by design (the machine itself cannot fire an emission stamped
+    beyond its own committed history), and reachability discharges the
+    premise at every reachable state.
+
+    Dual_Write_Effect_Sink_Delta_Convergence is the theory-backlog
+    addition (second-wave items I and J) that iterates and exports the
+    sink-delta lane: a rounds iterator applies the ledger footprint of
+    an interrupted sink-delta re-drive (a stamped prefix of the
+    currently computed batch --- every round state a MODELED
+    INTERMEDIATE; the core is never healed by a round, so the iterator
+    models repeated crash-interrupted re-drives against a fixed
+    committed source, not machine transitions) any number of times.
+    Under the named strictly-ascending-source premise the recomputed
+    delta after rounds with fired-prefix lengths ns is exactly the
+    drop (sum_list ns) remainder of the original batch, the cumulative
+    ledger extension is the take (sum_list ns) prefix stamped once,
+    the loop introduces no duplicate payloads, the delta is empty once
+    the cumulative fired count reaches the batch length (and within
+    batch-length rounds under per-round progress), and every round
+    state stays effect-safe --- the ascending premise witnessed biting
+    at the landed equal-coordinate control state through the iterator.
+    The computed delta at a frontier is moreover invariant under
+    source appends whose coordinates lie strictly beyond that frontier
+    --- a function equation about the source-append shape, consuming
+    no ordering premise and silent on machine interleaving (the priced
+    small-step design remains the machine-level contingency) --- with
+    the coordinate bound witnessed biting.  The export capstone
+    generates and type-checks Standard ML for sink_delta at the landed
+    decider bar (checking SML, kernel-evaluated code_simp witnesses,
+    no eval oracles): the escape's owed batch is runnable as a POINT
+    function --- never a schedule executor --- certified by the
+    section-18 laws and the convergence laws above; the src_coord code
+    setup is inherited from its single locked-core home, never
+    re-instantiated.
+
+    Dual_Write_Effect_Small_Step is the small-step reconcile variant
+    (theory-backlog item D, Design B) --- the ROBUSTNESS CERTIFICATE
+    for the disclosed atomic big-step reconcile boundary, never a new
+    primary machine: ONE added rule fires one entry of the scoped,
+    frontier-bounded replay from a Crashed state, stamped exactly as
+    the landed rules stamp --- a core stutter (no core field, no epoch,
+    no new simulation seam) --- over its own action datatype and trace
+    relation from the same pinned init, with the four landed rule
+    kinds' bodies verbatim.  Every cyclic trace embeds (rule
+    inclusion), and the landed atomic re-drive factors EXACTLY into
+    per-entry fires followed by the heal-only reconcile --- a special
+    case of the landed rule, not a new rule --- so a crash during a
+    re-drive becomes a stopped fire sequence.  The structural
+    invariant family re-lands with one new case each (stamps, the
+    epoch-factorization pair, anti-healing monotonicity and both
+    trace-persistence profiles), and the headline dilemma family
+    restates VERBATIM at the variant's reachability --- the
+    batch-agreement kernel, both Theorem-A forms, and the
+    (core, epoch) extension --- by obtaining the landed pair and
+    embedding it: boundary row 1's robustness claim is now a theorem,
+    with the exists-system polarity preserved.  The adaptive addendum
+    defeats per-entry strategies that watch the state evolve but
+    cannot read the sink (they factor through core, epoch, and their
+    own episode log): fires are core stutters, so such strategies fire
+    lockstep-equal sequences on the equal-core pair and their
+    fuel-bounded episodes fall to the equal-epoch kernel, while
+    replay-bounded episodes are realizable as genuine variant traces
+    ending in the policy redrive's own result state; one-shot
+    (core, epoch)-measured batches embed as strategies, so the class
+    strictly generalizes the landed one-shot classes.  Status physics
+    is machine-checked against the locked core (a Crashed core is
+    frozen up to the identity Observe and the status-only Recover, so
+    fire episodes admit stopped and abandoned runs, never commit
+    interleavings), and the non-vacuity witnesses separate the
+    machines: an epoch-0 pre-recovery sync invariant of the LANDED
+    cyclic machine --- proved here additively --- shows the fire-reached
+    in-flight partial ledger extension is cyclic-unreachable, and a
+    refire-duplicate witness exhibits the rule's at-least-once physics
+    with every entry justified.  Its positive half and discipline twin
+    land in the follow-on theory.
+
+    Dual_Write_Effect_Recovery_Class is the theory-backlog class
+    abstraction of the terminal-inexpressibility argument, deliberately
+    BRANCH-NEUTRAL: it imports Main alone, and neither effect-machine
+    branch sits in its import cone (the two interpretation theories
+    below import it, one per branch).  A locale of four assumptions ---
+    initial ledger/anchor sync, an absorbed status no transition exits,
+    atomically-born divergence (any step from a synced non-absorbed
+    state either preserves sync or lands absorbed in that same step),
+    and crashed-is-not-absorbed --- under which no pair of reachable
+    crashed states has equal cores and divergent observations.  The law
+    is ONE-DIRECTIONAL plus necessity controls, never an equivalence:
+    two abstract toy structures show each load-bearing assumption is
+    necessary (drop exactly one and the pair becomes reachable --- the
+    resume pole and the per-entry-fire pole, the two divergence
+    sources), membership failure implies nothing about pair
+    reachability, a verbatim-discharge adapter certifies that the
+    landed guarded-invariant shape instantiates the atomic assumption
+    with no rework, and a degenerate interpretation witnesses
+    non-vacuity.
+
+    Dual_Write_Effect_Terminal_Class_Membership certifies that the
+    TERMINAL machine is a member of that class: the wrapper's two
+    transition kinds unify over the landed trace-action type, the init
+    family is the whole (b, K, fin) parameter range as one set (the
+    cross-parameter strength), and the interpretation discharges all
+    four class assumptions from the landed section-17 lemma set, lemma
+    for lemma, with the one genuinely machine-specific fact entering
+    through the adapter.  The landed terminal headline re-derives as an
+    interpretation corollary under a new name (a sanity tie-back; the
+    landed theorem stays the theorem of record), via a reachability
+    glue that drops the temporal trace's wellformedness side conditions
+    --- disclosed as the safe direction, since reach only grows and
+    every consumed conclusion is a negative over reach.  Two designed
+    controls carry the payload qualifier at class level: at the
+    stamp-inclusive ledger observable, no anchor function exists
+    pointwise, and no anchor makes the machine a class member --- the
+    payload projection in the observable slot is load-bearing.
+
+    Dual_Write_Effect_Cyclic_Class_Violation packages the cyclic
+    machine's designed exit from that class --- witness/control
+    throughout, no new law.  The Resume rule exits the absorbed status
+    (every resume step starts absorbed and ends not absorbed), realized
+    at the landed reachable witness pair; consequently NO completion of
+    the class parameters makes the cyclic unified transition relation a
+    member at the Recovered reading of absorbed, because the violated
+    assumption mentions only the step relation and the absorbed
+    predicate.  Beside it, the landed dilemma pair is restated in the
+    class law's certificate shape: a reachable equal-core
+    payload-divergent crashed pair, its reachability the landed dilemma
+    chain's own theorem.  The two facts are packaged side by side, not
+    derived from each other --- class violation does not imply pair
+    reachability, and the landed defeat theorems keep their
+    exists-system polarity untouched: this theory is the load-bearing-
+    premise certificate for the class law's absorbing assumption, in
+    vivo.
+
+    Dual_Write_Effect_Small_Step_Escape is the POSITIVE HALF of the
+    small-step robustness certificate (item D, Design B, WP4): the
+    section-18 modeled intermediates are REALIZED as reachable variant
+    states.  Firing the first n entries of the currently computed
+    sink-delta batch from any crashed variant-reachable state is a
+    genuine variant trace whose end state is ss-reachable, effect-safe
+    (from an effect-safe start under the named strictly-ascending-source
+    premise), recomputes exactly the drop-n remainder, and COMPLETES:
+    re-running the escape from the mid-state heals the store at the
+    frontier, stays effect-safe, loses nothing, and leaves an empty
+    recomputed delta --- the section-18/20 laws consumed by citation at
+    machine states, with their fixed-committed-source posture the
+    machine's own physics (a Crashed core is frozen, so no commit can
+    interleave a fire episode).  A stopped episode lands exactly on the
+    section-20 rounds iterator's state --- state-level equality --- so
+    consecutive stopped retries within one crashed window realize
+    machine-level multi-round crash-interrupted redrive convergence:
+    exact remainder, no duplication, completion at the batch length,
+    hazard-freedom throughout.  Across ABANDONED episodes (fires, then
+    Recover without the completing heal, a cyclic Resume, a later crash)
+    the honest law is per-window: the delta RE-FOUNDS at the new window
+    as exactly the abandoned remainder when the source grew only beyond
+    the frontier --- status and epoch deliberately free, which is
+    precisely what abandonment moves --- while the stamp-constant
+    cumulative footprint provably does NOT extend across windows (the
+    two-window witness ledger carries one emission epoch per window, so
+    no single stamped map covers it).  The discipline twin extends T2.8
+    to the variant with ONE guard on the new rule --- each fired entry
+    fresh against the current ledger, the landed reconcile-suffix guard
+    restricted to singletons, never a new premise class; Resume stays
+    guard-free --- proved by reusing the landed per-rule preservation
+    lemmas verbatim plus the one new fire case; the landed discipline
+    embeds, disciplined variant runs are reachable runs, and the
+    cycle-exercising witness decomposes the landed reconcile into a
+    guarded fire (through the cyclic-unreachable in-flight state) plus
+    the bare heal, then crosses the cycle into a fresh epoch-1 publish.
+    Both new premises are witnessed load-bearing at machine level:
+    dropping the singleton guard reaches an effect-unsafe duplicate from
+    a disciplined-reachable effect-safe state, and dropping the ascending
+    premise lets a genuine machine fire silently starve a committed
+    instance at the WF-legal equal-coordinate control state.  Verdict
+    permanence restates on variant traces for any verdict function that
+    agrees with effect_unsafe.
+
+    Dual_Write_Effect_Compensation is the theory-backlog F+G addition
+    (compensable sinks) locating the landed dilemma's boundary on the
+    compensation axis: irreversibility is load-bearing exactly as
+    CANCELLATIVITY of the sink's observable, not as absence of
+    compensating actions --- compensating actions do not escape the
+    dilemma; absorbing (matched-semantics) sinks do.  The delta is
+    definitions only over the existing ledger: observables are pure
+    projections (the dedup-view precedent), compensating emissions are
+    ordinary appends through the landed policy redrive, no new machine,
+    record, or rule.  On MATCHED semantics (order-aware cancel, unmatched
+    compensations absorbed as no-ops --- a per-entry apply-time sink
+    lookup, T2.11's idempotence move in compensation clothing) the
+    store-measured compensate-everything-then-redo-everything policy
+    heals and achieves per-obligation matched-view count one at its own
+    frontier from every payload-duplicate-free crashed state under the
+    named strictly-ascending and forward-only-source premises (each
+    witnessed load-bearing at a designed control state), and the SAME
+    batch succeeds on both members of the landed dilemma pair.  On
+    SIGNED (group-like net-count) and TRUNCATED (floor-at-zero)
+    observables the designed pair's gap of one survives every shared
+    batch --- store-measured and (core, epoch)-measured policies remain
+    defeated with no ordering premise consumed, and the compensate-redo
+    batch itself lands the loss member at truncated view zero:
+    order-aware matching, not aggregate absorption, is the load-bearing
+    ingredient.  The mandatory parting control computes the escape's own
+    redrive premature and duplicate in the landed raw taxonomy ---
+    exactly_once_at fails --- at the very state whose matched view is
+    exact, so the landed dilemma family stands exactly as scoped; a
+    completer theorem names the idempotent cell's store-measured escape
+    through the landed layer-1 iff, finishing the four-row effect-class
+    picture (irreversible: impossible; idempotent: possible; matched:
+    possible; cancellative: impossible).  Compensations need no guard
+    (a backward payload never increases a matched-view count) --- the
+    compensable analogue of Resume-guard-freedom; the general saga
+    discipline is recorded future work.
+
+    Dual_Write_Effect_Presence_Bound is the discovery-wave addition (lens
+    C, candidate C1) pinning the sink-reading escape's information
+    requirement from ABOVE, upper bound only, premise-free: the landed
+    sink_delta reads the emission ledger ONLY through the presence set of
+    delivered payloads.  It is invariant under every presence-preserving
+    ledger rewrite --- reordering, duplicate collapse, stamp loss, epoch
+    loss, and keep-latest-per-payload log compaction, the latter proved
+    against a concrete compaction function whose output is payload-
+    distinct (a consumer table) --- and it factors through
+    (core, delivered-payload presence) as a machine-checked class
+    membership (presence_measured, mirroring the landed store_measured /
+    ledger_blind pattern one observation rung up; every store-measured
+    policy is presence-measured, and a stamp-reading control policy is
+    not, at a designed state pair of the pinned type).  Only the presence
+    bits of the current scoped, frontier-bounded replay ever matter: the
+    needed view is finite and recovery-window-local, so retention may
+    forget everything outside the window.  Juxtaposed with the landed B2
+    (the escape provably does not factor through the store) the escape is
+    pinned two-sidedly --- reads more than the store, needs no more than
+    the recovery window's delivered-payload presence --- stated about THE
+    landed policy, an upper bound, never a minimality or characterization
+    claim; the observable stays the landed raw emission ledger.
+
+    Dual_Write_Effect_Redrive_Mechanics is the discovery-track addition
+    (candidate A2) that flips boundary row 4's bulk-restore reading from
+    a disclosed model reading to machine-checked irrelevance for the
+    defeat: the batch-agreement kernel never reads the restored store or
+    the stamps.  On the SAME landed pair, every batch-agreeing re-drive
+    policy is defeated under EVERY installer of the post-crash core that
+    preserves the committed source (scope preservation consumed on the
+    loss side only --- the minimal premise set, its one scope premise
+    witnessed load-bearing by the scope-clearing control: recovery that
+    abandons the contract scope dodges loss by redefinition) and EVERY
+    appended emission block whose payload projection is the policy's
+    batch, stamps and epochs fully free; the store-measured and
+    (core, epoch)-measured faces re-run the landed quantifier plumbing,
+    and the wrapper epoch is untouched by construction.  A robustness
+    face of the landed kernel, never a new impossibility class: the
+    exists-system polarity is verbatim, an arbitrary installer need not
+    heal (healing is the landed rule's separately-proved bonus, recovered
+    through the instance bridge --- the landed policy redrive is one
+    installer/block instance), and any restore-from-cursor machine
+    variant's defeat is an instance, subsumed without building a third
+    machine.
+
+    Dual_Write_Effect_Cycle_Necessity is the discovery-track addition
+    (candidate B-1) that closes the per-machine gap in the
+    cycle-necessity story by mining the landed small-step separation
+    engine: on the machine of record, before the first Resume, no pair
+    of reachable crashed states has equal cores and payload-divergent
+    ledgers --- the pair's certificate shape --- and the trace form makes
+    the landed scope sentence a theorem there: a reachable equal-core
+    payload-divergent crashed pair requires a Resume in its history (the
+    landed dilemma pair itself sits at epoch 1, so the necessity is
+    inhabited).  The fire-pole contrast witnesses that sentence's
+    qualifier on the variant: the same certificate shape is reached by
+    one fire --- a Resume-free, epoch-0, fire-only variant trace at the
+    landed witnesses --- the class's atomic-divergence assumption
+    violated in vivo at ss-reachable states, and the variant's unified
+    step off the class at every completion of the five unpinned
+    parameter slots.  The cyclic machine's pre-first-recovery fragment
+    moreover interprets the recovery class (absorbed :=
+    Recovered-or-epoch-positive; the atomic-divergence obligation
+    discharged through the class theory's guarded-shape adapter fed by
+    the landed epoch-0 engine lemma) --- the class's second substantive
+    in-vivo membership, packaged beside the landed off-class fact at the
+    Recovered reading --- and the epoch-0 law re-derives through it as a
+    sanity tie-back, the landed engine theorem staying the bearer of
+    record.  Structural negatives, necessity facts, and witness facts
+    throughout: no iff, no defeat claim, no policy impossibility; the
+    landed defeat theorems keep their exists-system polarity and the
+    scope sentence keeps its exact landed wording.
+
+    Dual_Write_Effect_Escape_Recurrence is the discovery-track addition
+    (lens-A candidate A1) that closes the one-shot-vs-recurrence
+    asymmetry on the positive side: an escape-run relation whose label
+    steps carry the discipline's own guards, whose recovery transitions
+    are the landed sink-reading policy redrives under the named
+    strictly-ascending-source guard, and whose Resume is guard-free ---
+    disclosed in-theory as EXTENDING machine runs by policy-redrive
+    recovery transitions, the recovery model the dilemma itself
+    quantifies over (the discipline's restricts-the-scheduler-only
+    brand deliberately does not carry over).  Effect safety is
+    inductive along escape runs, and the recurrent law holds: EVERY
+    redrive fired anywhere along any escape run from an effect-safe
+    start heals every scoped store mismatch at its own frontier and
+    lands exactly-once at that frontier --- frontier-qualified per
+    redrive, the delivery-completeness conjunct inheriting the landed
+    terminal-state liveness stand-in status, across arbitrarily many
+    crash/recovery cycles with new work in between; the landed one-shot
+    escape is the empty-prefix instance.  A two-cycle witness (the
+    escape twin of the banked cursor-amplification schedule, its second
+    recovery heal-only with an empty recomputed delta) is ALSO proved
+    to be a genuine reachable machine run --- at the witness its two
+    redrives coincide with the warm-cursor and heal-only machine
+    reconciles, proved there and never generalized --- and is
+    contrasted with the banked amplification end state.  The
+    escape-run recovery guard is witnessed load-bearing at a WF-legal
+    equal-coordinate CRASHED control state where the sink-computed
+    batch is internally duplicated and the redrive result is
+    effect-unsafe (a state of the type, not claimed reachable).  This
+    strengthens the escape lane of the positive side; the headline law,
+    the discipline, and the contribution list are untouched.
+
+    Dual_Write_Effect_Observation_Bound is the external-review addition
+    (Edit C) closing the external-recovery-metadata reading of the
+    headline dilemma: the kernel's proof-local batch-agreement
+    derivation is replayed as an exported theorem at the designed pair
+    and lifted to ANY observation channel a policy factors through ---
+    external cursor, generation counter, dedup digest, any result type;
+    a channel that fails to distinguish the pair is defeated wholesale,
+    in the landed exists-pair family shape.  The honest boundary both
+    ways: an ACCURATE delivery-count cursor separates the pair (ledger
+    lengths 2 vs 1) and so escapes every defeated class, landing on the
+    sink-reading side of the dichotomy --- whether it also earns the
+    escape's guarantees is proved only for the landed sink_delta ---
+    while a ledger-READING emptiness observation that agrees on the
+    pair is exhibited still defeated: defeat is pair-agreement, not
+    ledger-blindness.  Exists-system polarity preserved; nothing new
+    claimed on the escape side.
+
+    Document generation is ENABLED (AFP packaging, 2026-07-06); the theory
+    text is LaTeX-clean.  Oracle-freedom is certified per landed slice by
+    scratch-side theorem-dependency gates with confirmed-biting negative
+    controls, kept outside the landed sources.
+  "
+  options [timeout = 600, document = pdf, document_output = "output", quick_and_dirty = false]
+  theories
+    Dual_Write_Effect_Machine
+    Dual_Write_Effect_Witnesses
+    Dual_Write_Effect_Cyclic
+    Dual_Write_Effect_Dilemma
+    Dual_Write_Effect_Discipline
+    Dual_Write_Effect_Segments
+    Dual_Write_Effect_Recovery_Grammar
+    Dual_Write_Effect_Segment_Boundaries
+    Dual_Write_Effect_Converse
+    Dual_Write_Effect_Relay
+    Dual_Write_Effect_Completeness
+    Dual_Write_Effect_Tightness
+    Dual_Write_Effect_Suffix_Freshness
+    Dual_Write_Effect_Exactly_Once
+    Dual_Write_Effect_Decider
+    Dual_Write_Effect_Dichotomy
+    Dual_Write_Effect_Terminal_Inexpressibility
+    Dual_Write_Effect_Sink_Delta_Idempotence
+    Dual_Write_Effect_Cyclic_Stamps_Control
+    Dual_Write_Effect_Sink_Delta_Convergence
+    Dual_Write_Effect_Small_Step
+    Dual_Write_Effect_Recovery_Class
+    Dual_Write_Effect_Terminal_Class_Membership
+    Dual_Write_Effect_Cyclic_Class_Violation
+    Dual_Write_Effect_Small_Step_Escape
+    Dual_Write_Effect_Compensation
+    Dual_Write_Effect_Presence_Bound
+    Dual_Write_Effect_Redrive_Mechanics
+    Dual_Write_Effect_Cycle_Necessity
+    Dual_Write_Effect_Escape_Recurrence
+    Dual_Write_Effect_Observation_Bound
+    Dual_Write_Effect_Channel
+    Dual_Write_Effect_Zombie
+    Dual_Write_Effect_Fencing
+    Dual_Write_Effect_Channel_Blind
+    Dual_Write_Effect_Retention_Control
+    Dual_Write_Effect_Delta_Order
+    Dual_Write_Effect_Windowed_Dedup
+    Dual_Write_Effect_Keyed_Delta
+    Dual_Write_Effect_Observation_Law
+    Dual_Write_Effect_Defect_Regressions
+    Dual_Write_Effect_Cursor
+  document_files
+    "root.tex"

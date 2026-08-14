@@ -1,0 +1,43 @@
+chapter AFP
+
+session Dual_Write_Unified = Dual_Write_Effect +
+  description "
+    The Road-2 UNIFIED MACHINE (tier 3): a single additive machine beside the
+    byte-frozen dual-write corpus that natively carries what the gap register
+    proved matters --- incarnations/generations with imperfect failure
+    detection (concurrent recovery, live zombies), source non-permanence
+    (truncating crashes + retention with a commit journal carrying the
+    anti-healing spine through truncation), dual source modality (log-replay +
+    Refresh-honesty snapshot justification in one guard surface), and the
+    delivery boundary at the acceptance level (sent /= accepted, loss, late
+    fires, fencing as the sink's acceptance discipline).
+
+    Conservativity (the admissibility condition) is established at statement
+    level and mechanized: the landed cyclic machine is recovered as the
+    fence-identically-0, single-incarnation, instant-delivery, permanent-source,
+    log-only fragment, with a total projection Pi, an embedding iota, a proved
+    section law Pi o iota = id, and all eight recovery rows meaning-change-free.
+
+    Additive by construction: fresh names (collision-swept against the merged
+    corpus), a new session, NO edit to any frozen session (dual_write_core is
+    AFP-bound; dual_write_effect gains nothing from this build). Built staged
+    I0-I8 per paper/dual_write/road2_clean_slate/ROAD2_STUDY_VERDICT.md and the
+    IMPLEMENTOR_FIELD_GUIDE; the increment->gate->principal mapping is recorded
+    in THEOREM_LADDER.md.
+  "
+  options [timeout = 600, document = false, quick_and_dirty = false]
+  theories
+    DWU_Machine
+    DWU_Recovery_Floor
+    DWU_Conservativity
+    DWU_Recovery_Rows
+    DWU_Fenced_Discipline
+    DWU_Concurrent_Recovery
+    DWU_Claim_Witness
+    DWU_Journal_Grade
+    DWU_Aliasing_Gates
+    DWU_Truncation
+    DWU_Modality
+    DWU_Segments
+    DWU_Measured_Via
+    DWU_Monotone_Floor

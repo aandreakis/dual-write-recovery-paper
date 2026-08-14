@@ -1,0 +1,120 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{isabelle,isabellesym}
+\usepackage{amssymb}
+\usepackage{booktabs}
+
+% this should be the last package used
+\usepackage{pdfsetup}
+
+% urls in roman style, theory text in math-similar italics
+\urlstyle{rm}
+\isabellestyle{it}
+
+% ToC: widen the subsection number box and the right margin reserved for
+% page numbers (long generated headings otherwise collide with them).
+\makeatletter
+\renewcommand*\l@subsection{\@dottedtocline{2}{1.5em}{3.3em}}
+\renewcommand\@tocrmarg{4.2em}
+\makeatother
+
+% Generated theory text carries long unbreakable identifiers; allow
+% extra stretch before lines protrude into the margin.
+\emergencystretch=3em
+
+\begin{document}
+
+\title{Emitted Effects of Dual Writes:\\
+  A Mechanized Two-Tier Recovery Study}
+\author{Andreas Andreakis}
+\maketitle
+
+\begin{abstract}
+  This is the emitted-effect tier (tier~2) of the dual-write development. It
+  builds a conservative \emph{wrapper machine} over the locked
+  \isa{Dual{\isacharunderscore}Write{\isacharunderscore}Core} execution layer
+  in which every downstream publish is an externally visible \emph{emission}
+  recorded in an append-only ledger, and recovery's re-drive is itself emitting
+  work driven by a persisted consumer cursor. The two structural laws of the
+  wrapper are that it \emph{simulates} the core (every effect step projects to a
+  landed core step) and that its emission-level hazard predicate
+  \isa{effect{\isacharunderscore}unsafe} is \emph{monotone} along every step and
+  reconcile on the reachable states --- once unsafe, no continuation heals the
+  ledger. This is the deliberate contrast to the landed store-tier theorems: the
+  durable store heals, the emitted effect does not.
+
+  On the operational (cyclic) wrapper --- the promoted primary, extended with a
+  recovery-epoch counter and an explicit resume rule --- the development carries a
+  headline law, the \emph{recovery-information dilemma}. A single designed-in pair
+  of reachable, effect-safe states with equal cores, equal epochs and divergent
+  ledgers defeats every re-drive policy that cannot distinguish its members: the
+  policy's own re-drive heals every scoped store mismatch on both members, yet
+  duplicates or goes premature on one and loses a committed effect on the other.
+  Every store-measured policy (each store-persisted cursor --- subsumption
+  machine-checked --- and each store-side dedup filter) and every
+  \isa{(core,\ epoch)}-measured policy is defeated; a sink-reading payload-delta
+  policy \emph{escapes} (heals, stays effect-safe, loses nothing) under a named
+  strictly-ascending-source premise, and provably does not factor through the
+  store. Exactly-once effect recovery, in the disclosed sense used here, exists
+  and requires reading the sink. A post-freeze dichotomy sharpens this into an
+  exhaustive alternative: because the wrapper record has exactly three fields,
+  ledger-blindness of a policy is the same thing as
+  \isa{(core,\ epoch)}-measurability, so every recovery policy either ignores the
+  sink and is defeated or reads it.
+
+  The development is honestly two-tier and stays inside its stated scope. The
+  \emph{discipline} (T2.8) is the safe half stated as a for-all theorem: every
+  trace whose publishes are justified at fire time and fresh against the ledger,
+  and whose reconciles re-drive ledger-fresh, internally distinct suffixes, ends
+  effect-safe --- with resume needing no guard, a cycle-exercising non-vacuity
+  witness, each guard witnessed load-bearing, and the two-premise slogan form
+  refuted. A segment factorization interface re-lands the store-tier corpus per
+  resume-free segment by citing the landed proofs verbatim, and per-epoch
+  re-landings of the store-tier converse, relay, completeness, tightness and
+  recovery-grammar theories follow it as restatement carriers with disclosed
+  scope, never upgrades. Suffix freshness, a two-tier executable point
+  \emph{decider} (never a schedule executor), and the exactly-once reading round
+  out the tier. The sink-reading escape is pinned two-sidedly: it reads more than
+  the store, yet an upper-bound theorem shows it needs no more than the recovery
+  window's delivered-payload presence --- an upper bound about the landed policy,
+  not a minimality or characterization claim.
+
+  Two \emph{robustness certificates} soften the disclosed atomic big-step
+  reconcile boundary without extending the machine: a small-step reconcile
+  variant on which every cyclic trace embeds and the headline dilemma family
+  restates verbatim, and a sink-delta convergence lane that iterates and exports
+  the owed batch as a certified point function. A compensable-sinks study locates
+  the dilemma's boundary on the compensation axis (irreversibility bites exactly
+  as cancellativity of the sink observable; order-aware matching escapes,
+  aggregate absorption does not). A deliberately branch-neutral \emph{recovery
+  class} abstracts the terminal-inexpressibility argument as a locale of four
+  assumptions under which no reachable crashed pair carries the dilemma
+  certificate; the terminal machine is certified a member and the cyclic machine
+  is certified to exit the class, each witness- and control-backed.
+
+  Throughout, the results keep an \emph{exists-system} polarity: they exhibit a
+  designed pair or a defeated policy, never assert that all systems called dual
+  writes fail. Soundness is scoped-state equality at the chosen frontier; no
+  general transactional atomicity, serializability, isolation, exactly-once
+  message delivery in the broker sense, or multidatabase atomic-commit protocol
+  is modelled or claimed. Every theorem is conditional on the premises stated in
+  its statement. The development is sorry-free and axiom-free and builds under
+  \isa{quick{\isacharunderscore}and{\isacharunderscore}dirty}~\isa{=}~false; the
+  landed slices are additionally certified oracle-free by dependency probes with
+  confirmed-biting negative controls, kept outside these sources, and the main
+  classes are inhabited by closed witnesses, so no result is vacuously true.
+\end{abstract}
+
+\tableofcontents
+
+\newpage
+
+% generated text of all theories
+\input{session}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

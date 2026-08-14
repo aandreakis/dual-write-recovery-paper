@@ -1,0 +1,414 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{31}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{} and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showURL}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showURL #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[Andreakis(2026a)]%
+        {dual-write-recovery-artifact}
+\bibfield{author}{\bibinfo{person}{Andreas Andreakis}.}
+  \bibinfo{year}{2026}\natexlab{a}.
+\newblock \bibinfo{title}{Isabelle/{HOL} Formal Development for
+  ``Machine-Checked Dual-Write Recovery from a Committed Log''}.
+\newblock
+\newblock
+\shownote{Archival deposit, Zenodo, DOI 10.5281/zenodo.21734366}.
+
+
+\bibitem[Andreakis(2026b)]%
+        {own-arxiv}
+\bibfield{author}{\bibinfo{person}{Andreas Andreakis}.}
+  \bibinfo{year}{2026}\natexlab{b}.
+\newblock \bibinfo{title}{A Theoretical Study of {DBLog}: Certified Virtual
+  Cuts for a Snapshot-Equivalent Replay of Live Databases}.
+\newblock
+\newblock
+\shownote{arXiv:2605.31475. Formal development archived on Zenodo, concept DOI
+  10.5281/zenodo.20389696 (version 2.1 at DOI \mbox{10.5281/zenodo.21732790})}.
+
+
+\bibitem[{Apache Flink documentation}(2026)]%
+        {flink-docs}
+\bibfield{author}{\bibinfo{person}{{Apache Flink documentation}}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{\texttt{TwoPhaseCommitSinkFunction}}.
+\newblock \bibinfo{howpublished}{Flink 1.20 Javadoc; deprecated in favour of
+  the newer Sink API.
+  \url{https://nightlies.apache.org/flink/flink-docs-release-1.20/api/java/org/apache/flink/streaming/api/functions/sink/TwoPhaseCommitSinkFunction.html}}.
+\newblock
+
+
+\bibitem[{Apache Kafka community}(2017)]%
+        {kip98}
+\bibfield{author}{\bibinfo{person}{{Apache Kafka community}}.}
+  \bibinfo{year}{2017}\natexlab{}.
+\newblock \bibinfo{title}{{KIP-98}: Exactly Once Delivery and Transactional
+  Messaging}.
+\newblock \bibinfo{howpublished}{Apache Kafka Improvement Proposals, adopted
+  2017.
+  \url{https://cwiki.apache.org/confluence/display/KAFKA/KIP-98+-+Exactly+Once+Delivery+and+Transactional+Messaging}}.
+\newblock
+
+
+\bibitem[{Apache Kafka documentation}(2026a)]%
+        {kafka-exp}
+\bibfield{author}{\bibinfo{person}{{Apache Kafka documentation}}.}
+  \bibinfo{year}{2026}\natexlab{a}.
+\newblock \bibinfo{title}{Broker Configuration
+  \texttt{producer.id.expiration.ms}}.
+\newblock \bibinfo{howpublished}{\kafkaexpurl}.
+\newblock
+\newblock
+\shownote{Default 86400000\,ms; KIP-854: Separate configuration for producer ID
+  expiry. Accessed July 2026}.
+
+
+\bibitem[{Apache Kafka documentation}(2026b)]%
+        {streams-eos}
+\bibfield{author}{\bibinfo{person}{{Apache Kafka documentation}}.}
+  \bibinfo{year}{2026}\natexlab{b}.
+\newblock \bibinfo{title}{Kafka Streams Core Concepts: Processing Guarantees}.
+\newblock
+  \bibinfo{howpublished}{\url{https://kafka.apache.org/documentation/streams/core-concepts}}.
+\newblock
+\newblock
+\shownote{\texttt{processing.guarantee}; KIP-129: Streams Exactly-Once
+  Semantics, 2017}.
+
+
+\bibitem[Auger et~al\mbox{.}(2013)]%
+        {auger2013pactole}
+\bibfield{author}{\bibinfo{person}{C\'edric Auger}, \bibinfo{person}{Zohir
+  Bouzid}, \bibinfo{person}{Pierre Courtieu}, \bibinfo{person}{S\'ebastien
+  Tixeuil}, {and} \bibinfo{person}{Xavier Urbain}.}
+  \bibinfo{year}{2013}\natexlab{}.
+\newblock \showarticletitle{Certified Impossibility Results for
+  {Byzantine}-Tolerant Mobile Robots}. In \bibinfo{booktitle}{\emph{Symposium
+  on Stabilization, Safety, and Security of Distributed Systems (SSS)}}
+  \emph{(\bibinfo{series}{Lecture Notes in Computer Science},
+  Vol.~\bibinfo{volume}{8255})}. \bibinfo{publisher}{Springer},
+  \bibinfo{pages}{178--190}.
+\newblock
+\href{https://doi.org/10.1007/978-3-319-03089-0_13}{doi:\nolinkurl{10.1007/978-3-319-03089-0_13}}
+
+
+\bibitem[Bisping et~al\mbox{.}(2016)]%
+        {flp-afp}
+\bibfield{author}{\bibinfo{person}{Benjamin Bisping},
+  \bibinfo{person}{Paul-David Brodmann}, \bibinfo{person}{Tim Jungnickel},
+  \bibinfo{person}{Christina Rickmann}, \bibinfo{person}{Henning Seidler},
+  \bibinfo{person}{Anke St{\"u}ber}, \bibinfo{person}{Arno Wilhelm-Weidner},
+  \bibinfo{person}{Kirstin Peters}, {and} \bibinfo{person}{Uwe Nestmann}.}
+  \bibinfo{year}{2016}\natexlab{}.
+\newblock \bibinfo{title}{A Constructive Proof for {FLP}}.
+\newblock \bibinfo{howpublished}{Archive of Formal Proofs,
+  \url{https://www.isa-afp.org/entries/FLP.html}}.
+\newblock
+\newblock
+\shownote{Companion: Mechanical verification of a constructive proof for {FLP},
+  \emph{ITP 2016}, LNCS 9807, pages 107--122}.
+
+
+\bibitem[Chajed et~al\mbox{.}(2019)]%
+        {perennial}
+\bibfield{author}{\bibinfo{person}{Tej Chajed}, \bibinfo{person}{Joseph
+  Tassarotti}, \bibinfo{person}{M.~Frans Kaashoek}, {and}
+  \bibinfo{person}{Nickolai Zeldovich}.} \bibinfo{year}{2019}\natexlab{}.
+\newblock \showarticletitle{Verifying Concurrent, Crash-Safe Systems with
+  {Perennial}}. In \bibinfo{booktitle}{\emph{Proceedings of the 27th Symposium
+  on Operating Systems Principles (SOSP 2019)}}. \bibinfo{pages}{243--258}.
+\newblock
+
+
+\bibitem[Chajed et~al\mbox{.}(2021)]%
+        {gojournal}
+\bibfield{author}{\bibinfo{person}{Tej Chajed}, \bibinfo{person}{Joseph
+  Tassarotti}, \bibinfo{person}{Mark Theng}, \bibinfo{person}{Ralf Jung},
+  \bibinfo{person}{M.~Frans Kaashoek}, {and} \bibinfo{person}{Nickolai
+  Zeldovich}.} \bibinfo{year}{2021}\natexlab{}.
+\newblock \showarticletitle{{GoJournal}: A Verified, Concurrent, Crash-Safe
+  Journaling System}. In \bibinfo{booktitle}{\emph{15th USENIX Symposium on
+  Operating Systems Design and Implementation (OSDI 2021)}}.
+  \bibinfo{pages}{423--439}.
+\newblock
+
+
+\bibitem[Fischer et~al\mbox{.}(1985)]%
+        {flp-jacm}
+\bibfield{author}{\bibinfo{person}{Michael~J. Fischer},
+  \bibinfo{person}{Nancy~A. Lynch}, {and} \bibinfo{person}{Michael~S.
+  Paterson}.} \bibinfo{year}{1985}\natexlab{}.
+\newblock \showarticletitle{Impossibility of Distributed Consensus with One
+  Faulty Process}.
+\newblock \bibinfo{journal}{\emph{J. ACM}} \bibinfo{volume}{32},
+  \bibinfo{number}{2} (\bibinfo{year}{1985}), \bibinfo{pages}{374--382}.
+\newblock
+
+
+\bibitem[Ghasemirad et~al\mbox{.}(2025)]%
+        {veriso}
+\bibfield{author}{\bibinfo{person}{Shabnam Ghasemirad}, \bibinfo{person}{Si
+  Liu}, \bibinfo{person}{Christoph Sprenger}, \bibinfo{person}{Luca Multazzu},
+  {and} \bibinfo{person}{David Basin}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{{VerIso}: Verifiable Isolation Guarantees for
+  Database Transactions}.
+\newblock
+\newblock
+\shownote{arXiv:2503.06284}.
+
+
+\bibitem[Gilbert and Lynch(2002)]%
+        {gilbert2002cap}
+\bibfield{author}{\bibinfo{person}{Seth Gilbert} {and} \bibinfo{person}{Nancy
+  Lynch}.} \bibinfo{year}{2002}\natexlab{}.
+\newblock \showarticletitle{Brewer's Conjecture and the Feasibility of
+  Consistent, Available, Partition-Tolerant Web Services}.
+\newblock \bibinfo{journal}{\emph{ACM SIGACT News}} \bibinfo{volume}{33},
+  \bibinfo{number}{2} (\bibinfo{year}{2002}), \bibinfo{pages}{51--59}.
+\newblock
+\href{https://doi.org/10.1145/564585.564601}{doi:\nolinkurl{10.1145/564585.564601}}
+
+
+\bibitem[Gray(1978)]%
+        {gray78}
+\bibfield{author}{\bibinfo{person}{Jim Gray}.} \bibinfo{year}{1978}\natexlab{}.
+\newblock \showarticletitle{Notes on Data Base Operating Systems}.
+\newblock In \bibinfo{booktitle}{\emph{Operating Systems: An Advanced Course}}.
+  \bibinfo{series}{Lecture Notes in Computer Science},
+  Vol.~\bibinfo{volume}{60}. \bibinfo{publisher}{Springer},
+  \bibinfo{pages}{393--481}.
+\newblock
+
+
+\bibitem[Guerraoui(1995)]%
+        {guerraoui1995nbac}
+\bibfield{author}{\bibinfo{person}{Rachid Guerraoui}.}
+  \bibinfo{year}{1995}\natexlab{}.
+\newblock \showarticletitle{Revisiting the Relationship Between Non-Blocking
+  Atomic Commitment and Consensus}. In \bibinfo{booktitle}{\emph{Distributed
+  Algorithms, 9th International Workshop (WDAG '95)}}
+  \emph{(\bibinfo{series}{Lecture Notes in Computer Science},
+  Vol.~\bibinfo{volume}{972})}. \bibinfo{publisher}{Springer},
+  \bibinfo{pages}{87--100}.
+\newblock
+\href{https://doi.org/10.1007/BFb0022140}{doi:\nolinkurl{10.1007/BFb0022140}}
+
+
+\bibitem[Hellerstein and Alvaro(2020)]%
+        {hellerstein2020calm}
+\bibfield{author}{\bibinfo{person}{Joseph~M. Hellerstein} {and}
+  \bibinfo{person}{Peter Alvaro}.} \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{Keeping {CALM}: When Distributed Consistency Is
+  Easy}.
+\newblock \bibinfo{journal}{\emph{Commun. ACM}} \bibinfo{volume}{63},
+  \bibinfo{number}{9} (\bibinfo{year}{2020}), \bibinfo{pages}{72--81}.
+\newblock
+\href{https://doi.org/10.1145/3369736}{doi:\nolinkurl{10.1145/3369736}}
+
+
+\bibitem[Kleppmann(2015)]%
+        {kleppmann2015dualwrites}
+\bibfield{author}{\bibinfo{person}{Martin Kleppmann}.}
+  \bibinfo{year}{2015}\natexlab{}.
+\newblock \bibinfo{title}{Using Logs to Build a Solid Data Infrastructure (or:
+  {Why} Dual Writes Are a Bad Idea)}.
+\newblock \bibinfo{howpublished}{Confluent Blog,
+  \url{https://www.confluent.io/blog/using-logs-to-build-a-solid-data-infrastructure-or-why-dual-writes-are-a-bad-idea/}}.
+\newblock
+
+
+\bibitem[Kleppmann(2016)]%
+        {klepp-lock}
+\bibfield{author}{\bibinfo{person}{Martin Kleppmann}.}
+  \bibinfo{year}{2016}\natexlab{}.
+\newblock \bibinfo{title}{How to Do Distributed Locking}.
+\newblock
+  \bibinfo{howpublished}{\url{https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html}}.
+\newblock
+\newblock
+\shownote{February 2016}.
+
+
+\bibitem[Kleppmann(2017)]%
+        {ddia}
+\bibfield{author}{\bibinfo{person}{Martin Kleppmann}.}
+  \bibinfo{year}{2017}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{Designing Data-Intensive Applications: The
+  Big Ideas Behind Reliable, Scalable, and Maintainable Systems}}.
+\newblock \bibinfo{publisher}{O'Reilly Media}.
+\newblock
+
+
+\bibitem[Kleppmann et~al\mbox{.}(2019)]%
+        {kleppmann2019olep}
+\bibfield{author}{\bibinfo{person}{Martin Kleppmann},
+  \bibinfo{person}{Alastair~R. Beresford}, {and} \bibinfo{person}{Boerge
+  Svingen}.} \bibinfo{year}{2019}\natexlab{}.
+\newblock \showarticletitle{Online Event Processing}.
+\newblock \bibinfo{journal}{\emph{Commun. ACM}} \bibinfo{volume}{62},
+  \bibinfo{number}{5} (\bibinfo{year}{2019}), \bibinfo{pages}{43--49}.
+\newblock
+\href{https://doi.org/10.1145/3312527}{doi:\nolinkurl{10.1145/3312527}}
+
+
+\bibitem[Masternak and Pobiega(2020)]%
+        {masternak}
+\bibfield{author}{\bibinfo{person}{Tomasz Masternak} {and}
+  \bibinfo{person}{Szymon Pobiega}.} \bibinfo{year}{2020}\natexlab{}.
+\newblock \bibinfo{title}{Model Checking Exactly-Once}.
+\newblock \bibinfo{howpublished}{Particular Software, July 2020.
+  TLA\textsuperscript{+} models:
+  \url{https://github.com/exactly-once/model-checking}; post:
+  \url{https://exactly-once.github.io/posts/model-checking-exactly-once/}}.
+\newblock
+
+
+\bibitem[Mullen et~al\mbox{.}(1992)]%
+        {mullen1992impossibility}
+\bibfield{author}{\bibinfo{person}{James~G. Mullen}, \bibinfo{person}{Ahmed~K.
+  Elmagarmid}, \bibinfo{person}{Won Kim}, {and} \bibinfo{person}{Jamshid
+  Sharif-Askary}.} \bibinfo{year}{1992}\natexlab{}.
+\newblock \showarticletitle{On the Impossibility of Atomic Commitment in
+  Multidatabase Systems}. In \bibinfo{booktitle}{\emph{Proceedings of the
+  Second International Conference on Systems Integration (ICSI)}}.
+  \bibinfo{publisher}{IEEE}, \bibinfo{pages}{625--634}.
+\newblock
+
+
+\bibitem[Nipkow et~al\mbox{.}(2002)]%
+        {isabelle}
+\bibfield{author}{\bibinfo{person}{Tobias Nipkow}, \bibinfo{person}{Lawrence~C.
+  Paulson}, {and} \bibinfo{person}{Markus Wenzel}.}
+  \bibinfo{year}{2002}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{Isabelle/{HOL}: A Proof Assistant for
+  Higher-Order Logic}}. \bibinfo{series}{Lecture Notes in Computer Science},
+  Vol.~\bibinfo{volume}{2283}.
+\newblock \bibinfo{publisher}{Springer}.
+\newblock
+
+
+\bibitem[Nowojski and Winters(2018)]%
+        {flink-blog}
+\bibfield{author}{\bibinfo{person}{Piotr Nowojski} {and} \bibinfo{person}{Mike
+  Winters}.} \bibinfo{year}{2018}\natexlab{}.
+\newblock \bibinfo{title}{An Overview of End-to-End Exactly-Once Processing in
+  Apache Flink (with Apache Kafka, too!)}.
+\newblock \bibinfo{howpublished}{Apache Flink blog, 28 February 2018}.
+\newblock
+
+
+\bibitem[Roohitavaf et~al\mbox{.}(2019)]%
+        {logplayer}
+\bibfield{author}{\bibinfo{person}{Mohammad Roohitavaf}, \bibinfo{person}{Kun
+  Ren}, \bibinfo{person}{Gene Zhang}, {and} \bibinfo{person}{Sami
+  Ben-Romdhane}.} \bibinfo{year}{2019}\natexlab{}.
+\newblock \bibinfo{title}{{LogPlayer}: Fault-Tolerant Exactly-Once Delivery
+  Using {gRPC} Asynchronous Streaming}.
+\newblock
+\newblock
+\shownote{arXiv:1911.11286}.
+
+
+\bibitem[Sergey et~al\mbox{.}(2018)]%
+        {disel}
+\bibfield{author}{\bibinfo{person}{Ilya Sergey}, \bibinfo{person}{James~R.
+  Wilcox}, {and} \bibinfo{person}{Zachary Tatlock}.}
+  \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{Programming and Proving with Distributed
+  Protocols}.
+\newblock \bibinfo{journal}{\emph{Proceedings of the ACM on Programming
+  Languages}} \bibinfo{volume}{2}, \bibinfo{number}{POPL}, Article
+  \bibinfo{articleno}{28} (\bibinfo{year}{2018}).
+\newblock
+
+
+\bibitem[Sharma et~al\mbox{.}(2023)]%
+        {grove}
+\bibfield{author}{\bibinfo{person}{Upamanyu Sharma}, \bibinfo{person}{Ralf
+  Jung}, \bibinfo{person}{Joseph Tassarotti}, \bibinfo{person}{M.~Frans
+  Kaashoek}, {and} \bibinfo{person}{Nickolai Zeldovich}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Grove: A Separation-Logic Library for Verifying
+  Distributed Systems}. In \bibinfo{booktitle}{\emph{Proceedings of the 29th
+  Symposium on Operating Systems Principles (SOSP 2023)}}.
+  \bibinfo{pages}{113--129}.
+\newblock
+
+
+\bibitem[{Stripe}(2026)]%
+        {stripe}
+\bibfield{author}{\bibinfo{person}{{Stripe}}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Idempotent Requests}.
+\newblock \bibinfo{howpublished}{Stripe API reference.
+  \url{https://docs.stripe.com/api/idempotent_requests}}.
+\newblock
+\newblock
+\shownote{Accessed July 2026}.
+
+
+\bibitem[{The Debezium project}(2026)]%
+        {debezium}
+\bibfield{author}{\bibinfo{person}{{The Debezium project}}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Debezium: Change Data Capture for a Variety of
+  Databases}.
+\newblock \bibinfo{howpublished}{\url{https://debezium.io}}.
+\newblock
+\newblock
+\shownote{Accessed July 2026}.
+
+
+\bibitem[Traytel(2025)]%
+        {afp-serial}
+\bibfield{author}{\bibinfo{person}{Dmitriy Traytel}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Formalization of (Conflict-)Serializability and
+  Strict Two-Phase Locking}.
+\newblock \bibinfo{howpublished}{Archive of Formal Proofs,
+  \url{https://www.isa-afp.org/entries/Serializable.html}}.
+\newblock
+
+
+\bibitem[Treat(2015)]%
+        {treat}
+\bibfield{author}{\bibinfo{person}{Tyler Treat}.}
+  \bibinfo{year}{2015}\natexlab{}.
+\newblock \bibinfo{title}{You Cannot Have Exactly-Once Delivery}.
+\newblock \bibinfo{howpublished}{Brave New Geek, March 2015.
+  \url{https://bravenewgeek.com/you-cannot-have-exactly-once-delivery/}}.
+\newblock
+
+
+\end{thebibliography}
