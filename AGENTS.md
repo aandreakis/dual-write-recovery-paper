@@ -8,10 +8,26 @@ This repository is the public information hub for the paper
 - the exact arXiv v4 paper source and stamped PDF;
 - the complete Isabelle/HOL artifact archived as
   Dual_Write_Recovery version 1.0;
-- reader-oriented summaries and figures.
+- reader-oriented scope notes and provenance.
 
-Use this file before answering questions about the results or modifying
-derived documentation.
+Human readers should start at <code>README.md</code>, which is deliberately
+short: it points at the sources and their identifiers. This file is the fullest
+orientation surface in the repository. Use it before answering questions about
+the results or modifying derived documentation.
+
+**Links.** Paper: [arXiv:2608.00501](https://arxiv.org/abs/2608.00501)
+([v4 abstract](https://arxiv.org/abs/2608.00501v4) ·
+[v4 PDF](https://arxiv.org/pdf/2608.00501v4) ·
+[in-repo PDF](paper/machine-checked-dual-write-recovery.pdf) ·
+[sources](paper/)). Formal development: [formal/](formal/) · archived at Zenodo
+[10.5281/zenodo.21734366](https://doi.org/10.5281/zenodo.21734366) (version 1.0)
+· [10.5281/zenodo.21734365](https://doi.org/10.5281/zenodo.21734365) (concept
+DOI). Navigation and derived reading:
+[formal/THEOREM_INDEX.md](formal/THEOREM_INDEX.md) ·
+[formal/README.md](formal/README.md) ·
+[docs/THEOREMS.md](docs/THEOREMS.md) ·
+[docs/PROVENANCE.md](docs/PROVENANCE.md). Author: Andreas Andreakis,
+[ORCID 0009-0003-9025-9402](https://orcid.org/0009-0003-9025-9402).
 
 ## Source precedence
 
@@ -35,7 +51,6 @@ does not check whether a real deployment satisfies those premises.
 |---|---|---|
 | <code>formal/</code> | Exact Zenodo 1.0 artifact bytes | Do not edit. Publish a new artifact version instead. |
 | <code>paper/</code> | Exact arXiv v4 source and PDF | Do not edit in place. Refresh only from a new public arXiv version. |
-| <code>assets/</code> | Renderings of paper figures | Regenerate from <code>paper/figures/</code>; do not redraw semantically. |
 | <code>README.md</code>, <code>docs/</code>, this file | Derived orientation | May be clarified if every claim remains traceable to the frozen sources. |
 | <code>CITATION.cff</code> | Repository citation metadata | Update only when the public paper or artifact record changes. |
 

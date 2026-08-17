@@ -98,7 +98,3 @@ payload:
 - <code>AGENTS.md</code>
 - <code>docs/</code>
 - <code>CITATION.cff</code>
-- PNG files under <code>assets/</code>
-
-Each PNG is a direct rasterization of the corresponding vector PDF in
-<code>paper/figures/</code>. No semantic content was redrawn.
