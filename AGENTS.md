@@ -5,14 +5,14 @@
 This repository is the public information hub for the paper
 "Machine-Checked Dual-Write Recovery from a Commit Log." It combines:
 
-- the exact arXiv v5 paper source and stamped PDF;
+- the exact arXiv v5 paper source and stamped PDF,
 - the complete Isabelle/HOL artifact archived as
-  Dual_Write_Recovery version 1.0.1;
-- reader-oriented scope notes and provenance.
+  Dual_Write_Recovery version 1.0.1,
+- scope notes for readers and provenance.
 
-Human readers should start at <code>README.md</code>, which is deliberately
-short: it points at the sources and their identifiers. This file is the fullest
-orientation surface in the repository. Use it before answering questions about
+Human readers should start at <code>README.md</code>, which is short and points
+at the sources and their identifiers. This file is the most detailed guide in
+the repository. Use it before answering questions about
 the results or modifying derived documentation.
 
 **Links.** Paper: [arXiv:2608.00501](https://arxiv.org/abs/2608.00501)
@@ -22,7 +22,7 @@ the results or modifying derived documentation.
 [sources](paper/)). Formal development: [formal/](formal/) · archived at Zenodo
 [10.5281/zenodo.22700396](https://doi.org/10.5281/zenodo.22700396) (version 1.0.1)
 · [10.5281/zenodo.21734365](https://doi.org/10.5281/zenodo.21734365) (concept
-DOI). Navigation and derived reading:
+DOI). Indexes and derived reading:
 [formal/THEOREM_INDEX.md](formal/THEOREM_INDEX.md) ·
 [formal/README.md](formal/README.md) ·
 [docs/THEOREMS.md](docs/THEOREMS.md) ·
@@ -35,15 +35,15 @@ When sources differ, use this order:
 
 1. **Isabelle theorem statements and definitions** under
    <code>formal/isabelle/</code> are authoritative for what is proved.
-2. **formal/THEOREM_INDEX.md** is the authoritative navigation map from
+2. **formal/THEOREM_INDEX.md** is the authoritative map from
    paper numbering T1-T12 to principal Isabelle theorem names and paths.
-   Its titles are handles, not substitute statements.
+   Its titles are labels. They do not replace the statements.
 3. **paper/main.tex** is authoritative for the paper's exposition,
    theorem statements as published, scope discussion, and proof ideas.
-4. **README.md** and <code>docs/</code> are derived reader aids.
+4. **README.md** and <code>docs/</code> are derived aids for readers.
 
-The kernel checks the theorem statements under their named premises. It
-does not check whether a real deployment satisfies those premises.
+The kernel checks the theorem statements under their named assumptions. It
+does not check whether a real deployment satisfies those assumptions.
 
 ## Frozen and editable areas
 
@@ -51,17 +51,17 @@ does not check whether a real deployment satisfies those premises.
 |---|---|---|
 | <code>formal/</code> | Exact Zenodo 1.0.1 artifact bytes | Do not edit. Publish a new artifact version instead. |
 | <code>paper/</code> | Exact arXiv v5 source and PDF | Do not edit in place. Refresh only from a new public arXiv version. |
-| <code>README.md</code>, <code>docs/</code>, this file | Derived orientation | May be clarified if every claim remains traceable to the frozen sources. |
+| <code>README.md</code>, <code>docs/</code>, this file | Derived guidance | May be clarified if every claim remains traceable to the frozen sources. |
 | <code>CITATION.cff</code> | Repository citation metadata | Update only when the public paper or artifact record changes. |
 
 ## Studied shape
 
 The theory studies exactly one configuration:
 
-- one side holds a durable, ordered, per-operation source record;
-- that record defines which work is owed;
-- effects travel in one direction toward one accepting endpoint;
-- the sink's durable acceptance record defines which effects are done.
+- One side holds a durable, ordered, per-operation source record.
+- That record defines which work is owed.
+- Effects travel in one direction toward one accepting endpoint.
+- The sink's durable acceptance record defines which effects are done.
 
 Do not generalize the results to arbitrary multidatabase topologies,
 bidirectional obligations, atomic commit, transaction isolation, or
@@ -103,30 +103,30 @@ asynchronous consensus.
 For corollaries, supporting results, historical numbering, and exact scope
 reminders, read <code>formal/THEOREM_INDEX.md</code>.
 
-## High-risk misreadings
+## Misreadings to avoid
 
 | Misreading | Correction |
 |---|---|
 | "The paper proves that every source-only recovery algorithm is impossible." | T1, T2, T3, T5, T7, and T10 quantify over named policy classes on constructed machines or schedules. Preserve those quantifiers. |
-| "A correct checkpoint is enough." | T3 deliberately includes the durable cursor in the equal local view. The missing fact is sink acceptance during the deliver-to-persist window. |
+| "A correct checkpoint is enough." | T3 includes the durable cursor in the equal local view. The missing fact is sink acceptance during the deliver-to-persist window. |
 | "Reading downstream contents escapes the bound." | The positive theorem reads an authoritative per-operation accepted record. Current contents can merge, overwrite, or omit the relevant history. |
 | "The sink read remains true after it is taken." | In-flight arrivals and competing recoverers can make it stale. T6 and T8 impose distinct acceptance-side disciplines. |
 | "The Wire Bound covers every policy unable to read the network." | T5 is scoped to channel-blind batch selectors inserted into one fixed unfenced re-drive relation at the designed pair. |
-| "Ordering two recoverers is sufficient." | T7's full scope is subtle. The loose grammar's duplicate witness uses a recoverer that sends without completing its store repair; the phase-ordered addendum changes the boundary and does not establish the same for-all conclusion. |
+| "Ordering two recoverers is sufficient." | The loose grammar's duplicate witness uses a recoverer that sends without completing its store repair. The phase-ordered addendum changes the boundary and does not establish the same for-all conclusion. |
 | "The arrival fence is free." | Corollary 6.1 (Rejection of later work) proves the cost: rejecting a stale duplicate can also drop an old request that would have delivered later work. |
 | "Fence raising may be split from the recovery delta." | T6's immediate exactness uses one atomic act that heals, lands the accepted delta, and raises the fence. |
-| "Exactly-once on the deduplicated view proves a consumer transaction." | T9's displayed identity is definitional on an absorbing permanent-memory deduplicated view; the substantive per-instance result has its own premises. |
+| "Exactly-once on the deduplicated view proves a consumer transaction." | T9's displayed identity is definitional on an absorbing permanent-memory deduplicated view. The substantive per-instance result has its own assumptions. |
 | "Truncated recovery is judged only against retained data." | T10 grades loss against the full journal specification while policies see only the retained view. |
-| "The model proves delivery." | Safety predicates are blind to never-emitted effects; no liveness theorem is claimed. |
-| "T12 merges all machines." | T12 proves selected relations under alignment premises. The wire does not lift and the machines retain distinct hazards. |
+| "The model proves delivery." | Safety predicates do not see effects that were never emitted. No liveness theorem is claimed. |
+| "T12 merges all machines." | T12 proves selected relations under alignment assumptions. The wire does not lift and the machines retain distinct hazards. |
 
 ## Artifact facts
 
 - Zenodo version DOI: <code>10.5281/zenodo.22700396</code>
 - Zenodo concept DOI: <code>10.5281/zenodo.21734365</code>
 - Version: <code>1.0.1</code>, a documentation-only update of version 1.0
-  (<code>10.5281/zenodo.21734366</code>); all 127 theory files are
-  byte-identical
+  (<code>10.5281/zenodo.21734366</code>). All 127 theory files are
+  byte-identical.
 - Release date: <code>2026-09-11</code>
 - Archive SHA-256:
   <code>5d04755739bc111a8a339e4c3f14941b84266e17d4191e79f83490003150ca29</code>
@@ -135,7 +135,7 @@ reminders, read <code>formal/THEOREM_INDEX.md</code>.
   <code>quick_and_dirty=false</code>.
 - No <code>axiomatization</code>, no <code>consts</code>, no proof
   oracles, and no unfinished proof.
-- One conservative source-coordinate <code>typedef</code>; its order is
+- One conservative source-coordinate <code>typedef</code>. Its order is
   proved.
 
 ## Verification commands
@@ -176,17 +176,17 @@ diff -r Dual_Write_Recovery-1.0.1 formal
 
 No output from <code>diff</code> means byte identity.
 
-## Safe summary
+## Short summary
 
 A short accurate summary is:
 
 > The paper gives a machine-checked information bound for recovery at a
 > one-way dual-write delivery boundary. Source-side state alone cannot
 > distinguish whether an independent sink accepted an operation during a
-> crash window. Under stated identity and completeness premises, reading
-> the sink's durable acceptance record supplies the missing information;
-> arrival and claim fences keep that read current, while deduplication and
-> source-history retention bound how long the guarantee remains available.
+> crash window. Under stated identity and completeness assumptions, reading
+> the sink's durable acceptance record supplies the missing information.
+> Arrival and claim fences keep that read current. Deduplication and
+> source-history retention limit how long the guarantee remains available.
 
 Do not shorten this to "exactly once is impossible" or "fencing guarantees
 exactly once."

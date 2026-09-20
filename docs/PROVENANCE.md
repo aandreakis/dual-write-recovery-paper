@@ -38,7 +38,7 @@ the public v5 source:
 - five vector PDFs under <code>figures/</code>
 
 The public source export also supplies an arXiv-generated
-<code>00README.json</code>; it is transport metadata and is not part of the
+<code>00README.json</code>. It is transport metadata and is not part of the
 paper payload mirrored here.
 
 The repository PDF
@@ -106,11 +106,11 @@ DBLog virtual-cuts formal development by DOI.
 This GitHub repository is not a third archival authority. It is an
 information hub that makes the two records easier to inspect together:
 
-- use arXiv for the paper of record;
-- use the Zenodo version DOI when exact proof-artifact bytes matter;
-- use the Zenodo concept DOI when a citation should follow future artifact
-  versions;
-- use GitHub for navigation, browsing, and issue discussion.
+- Use arXiv for the paper of record.
+- Use the Zenodo version DOI when you need the exact proof-artifact bytes.
+- Use the Zenodo concept DOI when a citation should follow future artifact
+  versions.
+- Use GitHub for browsing and issue discussion.
 
 ## Derived files
 

@@ -1,11 +1,11 @@
 # The twelve principal results
 
-This is a reader-oriented map for the paper
+This file is a guide to the twelve principal results of the paper
 "Machine-Checked Dual-Write Recovery from a Commit Log."
 
-The short titles below are handles, not formal statements. For citation or
-technical comparison, read the theorem in <code>paper/main.tex</code>, then
-follow the principal Isabelle theorem and its premises through
+The short titles below are labels. They are not formal statements. For citation
+or technical comparison, read the theorem in <code>paper/main.tex</code>, then
+follow the principal Isabelle theorem and its assumptions through
 <code>formal/THEOREM_INDEX.md</code>. The Isabelle source is authoritative.
 
 ## T1 - Observation Bound
@@ -49,7 +49,8 @@ are defeated on one member.
 
 **Scope.** The theorem is about the modeled projections named in the
 statement. It does not say that every conceivable control plane is
-uninformative. A durable sink acceptance record lies on the escape side.
+uninformative. Reading a durable sink acceptance record is outside this bound.
+That case is the subject of T4.
 
 ## T3 - Checkpoint Dilemma
 
@@ -69,9 +70,9 @@ included, and different acceptance/emission histories. Crash timing is the
 only nondeterminism. Recovery therefore fires the same batch and duplicates
 one effect or leaves one owed.
 
-**Scope.** This closes a loophole left by the pair-specific information
-bound: the states come from one concrete protocol. It does not claim that
-every protocol has the same window.
+**Scope.** Unlike the pair-specific information bound, the two states here
+come from one concrete protocol. The theorem does not claim that every
+protocol has the same window.
 
 ## T4 - Sink-Reading Escape
 
@@ -89,9 +90,9 @@ obligations minus the sink's accepted identities when the accepted record
 is authoritative, complete, current, and operations have stable
 distinguishing source coordinates.
 
-**Scope.** The theorem reads acceptance history, not merely current sink
-contents. Completeness and freshness are separate obligations. The theorem
-does not itself handle in-flight arrivals or concurrent recoverers; T5-T8
+**Scope.** The theorem reads acceptance history. Current sink contents are not
+enough. Completeness and freshness are separate obligations. The theorem
+does not itself handle in-flight arrivals or concurrent recoverers. T5-T8
 address those hazards.
 
 ## T5 - Wire Bound
@@ -131,7 +132,7 @@ It is exact at its own frontier. Old in-flight requests then fail the
 generation test.
 
 **Corollary 6.1 - Rejection of later work.**
-<code>fence_rescue_conversion</code> proves the price: the same fence that
+<code>fence_rescue_conversion</code> proves the cost: the same fence that
 rejects a stale duplicate may also reject an old request that would have
 delivered later work.
 
@@ -142,7 +143,7 @@ specified arrive/lose-only continuation.
 
 **Scope.** Immediate exactness relies on the fenced re-drive being one
 atomic act. Raising the fence before the batch can stop the recovery's own
-work; raising it only after resume can let the old request arrive first.
+work. Raising it only after resume can let the old request arrive first.
 Unscoped post-resume preservation is false.
 
 ## T7 - Second-Recoverer Bound
@@ -160,12 +161,12 @@ Unscoped post-resume preservation is false.
 recoverers that use the sink delta can jointly produce a duplicate or leave
 work owed within the theorem's schedule class.
 
-**Scope.** The headline grammar records final armed, fired, and healer sets;
-one duplicate witness relies on a member firing without its own heal. The
+**Scope.** T7's pair grammar records final armed, fired, and healer sets.
+One duplicate witness relies on a member firing without its own heal. The
 phase-ordered addendum proves ordered silent-death defeats and transports
-them to the loose grammar, but the headline for-all conclusion is false if
-the ordered extension simply replaces the loose extension at the landed
-witness. Preserve this distinction.
+them to the loose grammar. However, the T7 conclusion is false at the landed
+witness if the ordered extension replaces the loose extension. Preserve this
+distinction.
 
 ## T8 - Completed-Claim Exactness
 
@@ -185,15 +186,15 @@ machine.
 
 **Meaning.** An atomic claim sets the fence, reads the accepted record, and
 arms the batch in one step. A completed claim is exact at its fence under
-the statement's premises.
+the statement's assumptions.
 
 **Corollary 7.1 - Journal-grade exactness.**
 The journal-grade forms connect retained-grade and permanent-source
-specifications under explicit retention premises.
+specifications under explicit retention assumptions.
 
 **Scope.** This is not an unconditional concurrent exactly-once theorem.
-The atomic claim discipline and source/retention premises are
-load-bearing.
+The result depends on the atomic claim discipline and on the source and
+retention assumptions.
 
 ## T9 - Deduplicated-View Coverage Identity
 
@@ -232,8 +233,8 @@ through the retained view but differ in the journal specification. A
 policy based only on retained history must fabricate, abandon, or enter the
 statement's unsafe branch.
 
-**Scope.** Loss is graded against the full journal specification, not only
-the retained view seen by the policy.
+**Scope.** Loss is graded against the full journal specification. The policy
+sees only the retained view.
 
 ## T11 - Faithful-Image Equivalence
 
@@ -246,12 +247,12 @@ the retained view seen by the policy.
 **Source:**
 <code>formal/isabelle/dual_write_core/Dual_Write_Converse.thy</code>.
 
-**Meaning.** On the store machine, under the crash-closure premise, safety
+**Meaning.** On the store machine, under the crash-closure assumption, safety
 is equivalent to the running state remaining a faithful image of committed
 source history.
 
 **Scope.** The safe-side boundary is effectiveness rather than scope size.
-This is a store-tier characterization, not a delivery theorem.
+This is a store-tier characterization. It is not a delivery theorem.
 
 ## T12 - Shared-Core Agreement
 
@@ -268,7 +269,7 @@ This is a store-tier characterization, not a delivery theorem.
 <code>formal/isabelle/dual_write_unified/DWU_Conservativity.thy</code>.
 
 **Meaning.** The effect, unified concurrency, and store models share
-selected projections and relations when the stated alignment premises
+selected projections and relations when the stated alignment assumptions
 hold.
 
 **Scope.** The theorem does not merge the machines. The wire relation does
@@ -291,10 +292,10 @@ unconditional exactness result.
 
 When citing a result, include:
 
-1. the paper result number and title;
-2. the policy class or machine named in its statement;
-3. its judged frontier or evidence regime where applicable;
-4. any atomicity, completeness, ordering, or retention premise used by the
+1. the paper result number and title,
+2. the policy class or machine named in its statement,
+3. its judged frontier or evidence regime where applicable,
+4. any atomicity, completeness, ordering, or retention assumption used by the
    positive conclusion.
 
 Do not cite the one-line title alone.

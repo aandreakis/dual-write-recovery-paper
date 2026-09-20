@@ -9,20 +9,20 @@ accompanies it.
 
 An application commits an operation to one durable system and causes an effect
 in another, with no transaction spanning both. The paper gives a machine-checked
-information bound for recovery at that boundary — source-side state alone cannot
-distinguish whether the sink accepted an operation during a crash window — and
-the constructive results that follow from reading the sink's durable acceptance
-record, fencing stale actors at acceptance, and retaining the evidence. Twelve
-principal results, T1–T12, proved in Isabelle/HOL with no `axiomatization`, no
-`consts`, and no unfinished proof.
+information bound for recovery at that boundary: source-side state alone cannot
+distinguish whether the sink accepted an operation during a crash window. It
+also gives the constructive results that follow from reading the sink's durable
+acceptance record, fencing stale actors at acceptance, and retaining the
+evidence. There are twelve principal results, T1–T12. They are proved in
+Isabelle/HOL with no `axiomatization`, no `consts`, and no unfinished proof.
 
 The negative results quantify over named policy classes on constructed reachable
-witnesses; the positive results carry explicit observation, identity, atomicity,
-ordering, and retention premises. Nothing here is a liveness claim, and no
-production system is verified. The kernel checks proofs from their hypotheses;
-it cannot establish that a deployment satisfies them.
+witnesses. The positive results carry explicit observation, identity, atomicity,
+ordering, and retention assumptions. Nothing here is a liveness claim, and no
+production system is verified. The kernel checks proofs from their assumptions.
+It cannot establish that a deployment satisfies them.
 
-**Links** — [paper on arXiv](https://arxiv.org/abs/2608.00501) ·
+**Links:** [paper on arXiv](https://arxiv.org/abs/2608.00501) ·
 [archived artifact (Zenodo)](https://doi.org/10.5281/zenodo.22700396) ·
 [theorem scope notes](docs/THEOREMS.md) ·
 [paper-to-Isabelle map](formal/THEOREM_INDEX.md) ·
@@ -35,18 +35,18 @@ it cannot establish that a deployment satisfies them.
 |---|---|
 | [paper/](paper/) | Exact arXiv v5 manuscript files, the five source figures, and arXiv's stamped PDF. |
 | [formal/](formal/) | The complete eight-session Isabelle/HOL artifact, **byte-identical to Zenodo version 1.0.1**. Do not edit. |
-| [formal/THEOREM_INDEX.md](formal/THEOREM_INDEX.md) | Authoritative navigation map from T1–T12 and corollaries to Isabelle theorem names and files. |
+| [formal/THEOREM_INDEX.md](formal/THEOREM_INDEX.md) | Authoritative map from T1–T12 and corollaries to Isabelle theorem names and files. |
 | [formal/README.md](formal/README.md) | The artifact's own README: version note, session layout, build notes, verification limits. |
-| [docs/THEOREMS.md](docs/THEOREMS.md) | Reader-oriented scope notes for each result — including what each does *not* say. |
+| [docs/THEOREMS.md](docs/THEOREMS.md) | Scope notes for each result, including what each does *not* say. |
 | [docs/PROVENANCE.md](docs/PROVENANCE.md) | Paper and artifact version history, DOIs, hashes. |
 | [AGENTS.md](AGENTS.md) | Source precedence, terminology, non-claims, and verification instructions for AI tools. |
 
 ## The paper
 
 - **arXiv v5:** [abstract](https://arxiv.org/abs/2608.00501v5) ·
-  [PDF](https://arxiv.org/pdf/2608.00501v5) — 23 pages, 5 figures,
+  [PDF](https://arxiv.org/pdf/2608.00501v5). 23 pages, 5 figures,
   cs.DB + cs.DC + cs.LO, CC BY 4.0.
-- **In this repository:** [machine-checked-dual-write-recovery.pdf](paper/machine-checked-dual-write-recovery.pdf) — arXiv's own stamped v5 PDF.
+- **In this repository:** [machine-checked-dual-write-recovery.pdf](paper/machine-checked-dual-write-recovery.pdf), arXiv's own stamped v5 PDF.
 - **Build from source** (the bundle carries `main.bbl`, so BibTeX is not
   required for this exact rebuild):
 
@@ -88,15 +88,15 @@ diff -r Dual_Write_Recovery-1.0.1 formal
 ~~~
 
 No output from `diff` means the trees are identical. Zenodo remains the archival
-identifier; this repository is a convenience mirror.
+identifier. This repository is a mirror.
 
 ## Versions and DOIs
 
 | | Paper | Formal development |
 |---|---|---|
-| Current | [arXiv:2608.00501v5](https://arxiv.org/abs/2608.00501v5), 11 Sep 2026 | `1.0.1` — [10.5281/zenodo.22700396](https://doi.org/10.5281/zenodo.22700396), 11 Sep 2026 |
-| Previous | [v4](https://arxiv.org/abs/2608.00501v4), 13 Aug · [v3](https://arxiv.org/abs/2608.00501v3), 8 Aug · [v2](https://arxiv.org/abs/2608.00501v2), 4 Aug · [v1](https://arxiv.org/abs/2608.00501v1), 1 Aug | `1.0` — [10.5281/zenodo.21734366](https://doi.org/10.5281/zenodo.21734366), 1 Aug 2026 |
-| Always-latest artifact DOI | — | [10.5281/zenodo.21734365](https://doi.org/10.5281/zenodo.21734365) (concept DOI) |
+| Current | [arXiv:2608.00501v5](https://arxiv.org/abs/2608.00501v5), 11 Sep 2026 | `1.0.1`, [10.5281/zenodo.22700396](https://doi.org/10.5281/zenodo.22700396), 11 Sep 2026 |
+| Previous | [v4](https://arxiv.org/abs/2608.00501v4), 13 Aug · [v3](https://arxiv.org/abs/2608.00501v3), 8 Aug · [v2](https://arxiv.org/abs/2608.00501v2), 4 Aug · [v1](https://arxiv.org/abs/2608.00501v1), 1 Aug | `1.0`, [10.5281/zenodo.21734366](https://doi.org/10.5281/zenodo.21734366), 1 Aug 2026 |
+| Always-latest artifact DOI | | [10.5281/zenodo.21734365](https://doi.org/10.5281/zenodo.21734365) (concept DOI) |
 
 The arXiv v5 paper cites the exact Zenodo version DOI
 `10.5281/zenodo.22700396`, and this repository's `formal/` tree is
@@ -140,13 +140,13 @@ GitHub's **Cite this repository** button reads [CITATION.cff](CITATION.cff).
 
 ## Licence
 
-- **Paper text and figures** (`paper/` and reader documentation) — Creative
+- **Paper text and figures** (`paper/` and reader documentation): Creative
   Commons Attribution 4.0 International, matching the arXiv posting. See
   [LICENSES/CC-BY-4.0.txt](LICENSES/CC-BY-4.0.txt).
-- **Isabelle/HOL development** (`formal/`) — BSD 3-Clause. See
+- **Isabelle/HOL development** (`formal/`): BSD 3-Clause. See
   [LICENSE](LICENSE), copied from the archived artifact.
 
 ## Author
 
-**Andreas Andreakis** — independent researcher ·
+**Andreas Andreakis**, independent researcher ·
 [ORCID 0009-0003-9025-9402](https://orcid.org/0009-0003-9025-9402)
