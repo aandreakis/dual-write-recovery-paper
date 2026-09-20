@@ -1,85 +1,76 @@
-# Isabelle/HOL formal development for "Machine-Checked Dual-Write Recovery from a Committed Log"
+# Isabelle/HOL formal development for "Machine-Checked Dual-Write Recovery from a Commit Log"
 
-This is the complete Isabelle/HOL session dependency closure behind
-the paper
+This archive contains the complete Isabelle/HOL dependency closure for
+**Machine-Checked Dual-Write Recovery from a Commit Log** by Andreas Andreakis.
+It provides the source needed to rebuild the proofs with Isabelle2025-2 and
+a theorem index linking the paper's numbered results to their formal statements.
+The manuscript itself is not included.
 
-> **Machine-Checked Dual-Write Recovery from a Committed Log**,
-> by Andreas Andreakis.
+## Version 1.0.1
 
-This deposit is an audit and reproducibility artifact: the paper is
-written to be read without it, and every numbered result in the paper
-is understandable from the paper alone. What this archive adds is the
-machine check — the ability to rebuild every proof from source under
-Isabelle2025-2 and to trace each numbered paper result to the exact
-mechanized theorem it reports.
+This is a documentation-only update to version 1.0. This README was
+rewritten, the document bibliography uses the paper's current title, and
+the theorem index uses the paper's current display names. All 127 theory
+files, all eight session ROOT files, and the remaining build inputs are
+byte-identical to version 1.0. No definitions, theorem statements, proofs,
+or session dependencies changed.
 
-The subject is the delivery boundary of dual-write systems in the
-change-data-capture (CDC) setting: a source database's committed log is
-the authority, effects are delivered to an external sink, and the
-relay's delivery and its progress record are two separate durable acts.
-The paper's spine is an information bound (two reachable post-crash
-states can agree on everything the crashed side durably knows and still
-differ in what the sink accepted), the sink-reading escape from it, the
-staleness and concurrency fences at the sink's acceptance boundary, and
-the proved lifetime limits of the evidence (bounded deduplication
-memory, truncated source history).
+This release supersedes version 1.0 in the same Zenodo version series.
+The archive embeds no Zenodo identifier of its own. Those identifiers are
+recorded in the Zenodo metadata and cited from the paper.
+
+## Scope
+
+The development studies recovery between a source with a durable record of
+committed events and an independently accepting sink. It constructs states
+that recovery cannot distinguish from source-side information alone, and
+proves the resulting limits on recovery policies. Positive results specify
+conditions under which sink acceptance records and fencing support recovery.
+Further results examine concurrent workers, finite deduplication memory,
+and loss of source history.
+
+The negative results concern the modeled machines and specified policy
+classes. Positive results depend on their stated assumptions. The proofs
+do not verify a deployed broker, connector, mail provider, or recovery
+implementation. Exactly-once results are relative to the event, frontier,
+and retained history specified by each statement.
 
 ## Contents
 
-The archive contains this `README.md`, `LICENSE`, the paper-to-theorem
-map `THEOREM_INDEX.md`, and the eight-session closure under
-`isabelle/` (127 theory files in total).
+There are 147 files, including 127 Isabelle theory files. The archive root is
+`Dual_Write_Recovery-1.0.1/` and contains:
 
-```text
-Dual_Write_Recovery-1.0/
-├── README.md
-├── LICENSE
-├── THEOREM_INDEX.md            maps paper results T1–T12 to theorems + sources
-└── isabelle/
-    ├── dual_write_layer0/            session Dual_Write_Layer0   (5 theories)
-    │                                 shared source/replay substrate; parent HOL-Library;
-    │                                 the one conservative typedef, its order proved
-    ├── dual_write_core/              session Dual_Write_Core     (23 theories)
-    │                                 store tier: crash partition, verified relay,
-    │                                 faithful-image converse, completeness, decider
-    ├── dual_write_effect/            session Dual_Write_Effect   (42 theories)
-    │                                 emitted-effect tier: append-only emission ledger,
-    │                                 observation/control-plane bounds, checkpoint
-    │                                 dilemma, sink-reading escape, wire bound,
-    │                                 arrival fence, dedup-view coverage identity
-    ├── dual_write_unified/           session Dual_Write_Unified  (14 theories)
-    │                                 unified machine: concurrent recovery, claim
-    │                                 fences, journal-grade closures, truncation,
-    │                                 shared-core agreement
-    ├── dual_write_transit/           session Dual_Write_Transit  (7 theories)
-    │                                 acceptance-level transit interface
-    ├── dual_write_schedule_validator/ session Dual_Write_Schedule_Validator (1 theory)
-    │                                 certified schedule validator companion
-    ├── formal/                       session DBLog_Virtual_Cuts  (34 theories)
-    │                                 the DBLog virtual-cut development (see below);
-    │                                 carries its own README.md and LICENSE
-    └── dual_write_dblog_instance/    session Dual_Write_DBLog_Instance (1 theory)
-                                      the DBLog worked-instance bridge
-```
+- `README.md`: release and build information.
+- `LICENSE`: the BSD 3-Clause license.
+- `THEOREM_INDEX.md`: the mapping from paper results to Isabelle statements.
+- `isabelle/`: the complete eight-session source closure.
 
-Session parentage: `HOL-Library` → `Dual_Write_Layer0` →
-`Dual_Write_Core` → `Dual_Write_Effect` → `Dual_Write_Unified` →
-`Dual_Write_Transit`; `Dual_Write_Schedule_Validator` sits on
-`Dual_Write_Core`; `DBLog_Virtual_Cuts` sits on `Dual_Write_Layer0`,
-and `Dual_Write_DBLog_Instance` — its sole importer here — exhibits one
-certified wellformed DBLog run as a worked instance of the shared
-virtual-cut-state interface. No Archive of Formal Proofs entries are
-required; a stock Isabelle distribution suffices.
+| Directory under isabelle/ | Session | Theory files |
+|---|---|---:|
+| dual_write_layer0 | Dual_Write_Layer0 | 5 |
+| dual_write_core | Dual_Write_Core | 23 |
+| dual_write_effect | Dual_Write_Effect | 42 |
+| dual_write_unified | Dual_Write_Unified | 14 |
+| dual_write_transit | Dual_Write_Transit | 7 |
+| dual_write_schedule_validator | Dual_Write_Schedule_Validator | 1 |
+| formal | DBLog_Virtual_Cuts | 34 |
+| dual_write_dblog_instance | Dual_Write_DBLog_Instance | 1 |
 
-`THEOREM_INDEX.md` maps every numbered result in the paper (T1–T12,
-their corollaries, and the named supporting results) to its principal
-Isabelle theorem(s) and source file; its `isabelle/...` paths resolve
-verbatim inside this archive. The Isabelle statements are authoritative;
-the index is a navigation map, not a second specification.
+The main dependency chain is HOL-Library, Dual_Write_Layer0,
+Dual_Write_Core, Dual_Write_Effect, Dual_Write_Unified, and
+Dual_Write_Transit. The schedule validator depends on Dual_Write_Core.
+DBLog_Virtual_Cuts depends on Dual_Write_Layer0, and
+Dual_Write_DBLog_Instance provides the worked-instance bridge.
+No Archive of Formal Proofs entries are required.
 
-## Building
+The paths in `THEOREM_INDEX.md` resolve directly inside this archive.
+That index is a navigation aid. The Isabelle statements and their
+assumptions determine what is proved.
 
-Verified with **Isabelle2025-2**. From the archive root:
+## Build
+
+Use a stock **Isabelle2025-2** installation and a working LaTeX toolchain.
+Run this command from the extracted archive root:
 
 ```bash
 isabelle build -b -j 8 -o quick_and_dirty=false \
@@ -90,104 +81,51 @@ isabelle build -b -j 8 -o quick_and_dirty=false \
   Dual_Write_Transit Dual_Write_Schedule_Validator Dual_Write_DBLog_Instance
 ```
 
-The three named targets close the whole development: `Dual_Write_Transit`
-pulls the Layer-0 → Core → Effect → Unified → Transit chain,
-`Dual_Write_Schedule_Validator` adds the certified validator, and
-`Dual_Write_DBLog_Instance` builds the worked DBLog bridge through
-`DBLog_Virtual_Cuts`. The `-b` flag saves heap images so a partial
-build cannot leave ancestor sessions unloadable.
+These three targets build the complete dependency closure. The `-b` option
+saves heap images. The `quick_and_dirty=false` option rejects unfinished
+proofs. Four sessions also generate entry-document PDFs, so LaTeX and
+BibTeX must be available.
 
-Notes:
+For an isolated build, set `USER_HOME` to a fresh directory for this
+command. Isabelle derives its user settings and session databases from
+that directory. Do not reuse session databases from a different version
+of this development.
 
-- The `sorry`-intolerant `quick_and_dirty=false` build **is** the check.
-- Four sessions (`Dual_Write_Layer0`, `Dual_Write_Core`,
-  `Dual_Write_Effect`, `DBLog_Virtual_Cuts`) generate entry documents
-  (PDFs), so the documented build needs a working LaTeX toolchain.
-  Their `ROOT` files pin `document = pdf`, and session options take
-  precedence over command-line `-o` options; to check the proofs
-  without LaTeX, remove the `document = pdf, document_output = "output"`
-  options from those `ROOT` files before building.
-- If a pre-existing `~/.isabelle` holds conflicting session databases
-  from older builds, run with a fresh user home, e.g.
-  `USER_HOME=$(mktemp -d) isabelle build ...` (Isabelle derives its
-  user home from `$USER_HOME`; exporting `ISABELLE_HOME_USER` directly
-  is ignored by the settings mechanism).
-- The full chain is quick: a from-scratch run of the exact command
-  above — `HOL-Library` compilation and all four entry documents
-  included — completes in about five minutes on a modern laptop
-  (Apple Silicon M-class, 8 parallel jobs).
+## Verification limits
 
-## Verification
+The Isabelle kernel checks the formal statements under their assumptions.
+A successful build does not establish that a deployed system satisfies
+those assumptions. In particular, the formal durability, acceptance,
+fencing, and retention rules must be justified for the implementation.
+The safety predicates and completeness predicates are separate, and the
+frontier-relative completeness results do not make an eventual-delivery
+claim for arbitrary future execution.
 
-The development builds `sorry`-free under `quick_and_dirty=false` and
-is axiom-free: it declares no `axiomatization` and no `consts`; every
-type it introduces is a `datatype` or `record` except one conservative
-`typedef` — the shared source-coordinate type in `Dual_Write_Layer0` —
-whose order is *proved*, not assumed. Witnesses and
-counterexample fixtures are constructed instances. The corpus was
-closed after a multi-round adversarial review program in which every
-landed slice was gated by full-chain clean builds on an isolated
-Isabelle home.
+## Included DBLog development
 
-The kernel checks each theorem under the premises stated in its own
-statement. It does not, and cannot, discharge the modelling assumptions
-a real deployment must establish — faithful capture and delivery
-plumbing, the durability of what the model calls durable, and the
-sink-side acceptance discipline actually being enforced at the claimed
-boundary.
-
-## Scope and non-claims
-
-- The paper studies one configuration — the *studied shape*: exactly
-  one side (the source) holds the durable, ordered, per-operation
-  record that defines what is owed, and the obligation runs one way,
-  toward the sink. This is not a general theory of arbitrary dual
-  writes; the paper states the shape and its exclusions explicitly.
-- The impossibility results are exists-system statements proved at
-  designed witness machines or schedules — information bounds, not
-  for-all laws over implementations. The positive results (the
-  discipline theorems, the fences, the equivalences) are parametric
-  under their stated premises.
-- Effect-safety never means delivery: the safety predicates are blind
-  to never-emitted deliveries, and no liveness is claimed. The
-  append-only emission ledger is a disclosed modeling decision ("the
-  world does not roll back"), not a discovered law.
-- Nothing here claims general transactional atomicity, serializability,
-  isolation, or multidatabase atomic commitment; the results are
-  crash-durability facts, not FLP-style asynchronous-consensus results.
-
-## Relationship to prior artifacts
-
-The bundled `isabelle/formal/` session is the **DBLog_Virtual_Cuts**
-development — the formal artifact of the separate paper *A
-Theoretical Study of DBLog* — whose published archival record is
-[10.5281/zenodo.20389696](https://doi.org/10.5281/zenodo.20389696)
-(the concept DOI, resolving to the latest version; version 2.1 at
-[10.5281/zenodo.21732790](https://doi.org/10.5281/zenodo.21732790)). It is included here so the archive is a self-contained
-build closure for the one worked instance; its own `README.md`
-documents that development in full. No part of the dual-write
-development itself has been deposited before — this is its first
-published version.
+The `isabelle/formal/` directory contains the DBLog_Virtual_Cuts development
+needed by the worked instance. Its separately published version 2.1 is at
+[10.5281/zenodo.21732790](https://doi.org/10.5281/zenodo.21732790), with concept
+DOI [10.5281/zenodo.20389696](https://doi.org/10.5281/zenodo.20389696).
+Its own README and license remain unchanged in this archive.
 
 ## Release identification
 
-```text
-Version:        1.0
-Release date:   2026-08-01
-Source commit:  d40f550f
-```
+- Version: **1.0.1**.
+- Prepared: **2026-09-11**.
+- Theorem index and document bibliography as of commit
+  `5bf0b541797bb57345c5a6ff9ec710753857ffc3`.
+- Formal source baseline: version 1.0, archive SHA-256
+  `b18fe3d6ad2a56f5f3269460ec8f87a83504ffbd006d10f3e8db25801bf3a713`.
 
-The deposit's DOI lives on the Zenodo record page and in the
-accompanying paper's bibliography; it is deliberately not embedded in
-the archive itself (an artifact citing its own version identifier is
-a cyclical dependency).
+The release DOI is recorded in the Zenodo metadata and cited from the
+paper's bibliography. It is not embedded in this archive, so obtaining it
+does not require another archive build.
 
-## License
+## License and author
 
-BSD 3-Clause "New" or "Revised" License — see `LICENSE`. The bundled
-DBLog session carries its own copy of the same license.
+BSD 3-Clause, as provided in `LICENSE`. The bundled DBLog session retains
+its own copy of that license.
 
-## Author
-
-Andreas Andreakis — ORCID
+Andreas Andreakis, ORCID
 [0009-0003-9025-9402](https://orcid.org/0009-0003-9025-9402).

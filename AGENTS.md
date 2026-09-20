@@ -3,11 +3,11 @@
 ## Purpose
 
 This repository is the public information hub for the paper
-"Machine-Checked Dual-Write Recovery from a Committed Log." It combines:
+"Machine-Checked Dual-Write Recovery from a Commit Log." It combines:
 
-- the exact arXiv v4 paper source and stamped PDF;
+- the exact arXiv v5 paper source and stamped PDF;
 - the complete Isabelle/HOL artifact archived as
-  Dual_Write_Recovery version 1.0;
+  Dual_Write_Recovery version 1.0.1;
 - reader-oriented scope notes and provenance.
 
 Human readers should start at <code>README.md</code>, which is deliberately
@@ -16,11 +16,11 @@ orientation surface in the repository. Use it before answering questions about
 the results or modifying derived documentation.
 
 **Links.** Paper: [arXiv:2608.00501](https://arxiv.org/abs/2608.00501)
-([v4 abstract](https://arxiv.org/abs/2608.00501v4) ·
-[v4 PDF](https://arxiv.org/pdf/2608.00501v4) ·
+([v5 abstract](https://arxiv.org/abs/2608.00501v5) ·
+[v5 PDF](https://arxiv.org/pdf/2608.00501v5) ·
 [in-repo PDF](paper/machine-checked-dual-write-recovery.pdf) ·
 [sources](paper/)). Formal development: [formal/](formal/) · archived at Zenodo
-[10.5281/zenodo.21734366](https://doi.org/10.5281/zenodo.21734366) (version 1.0)
+[10.5281/zenodo.22700396](https://doi.org/10.5281/zenodo.22700396) (version 1.0.1)
 · [10.5281/zenodo.21734365](https://doi.org/10.5281/zenodo.21734365) (concept
 DOI). Navigation and derived reading:
 [formal/THEOREM_INDEX.md](formal/THEOREM_INDEX.md) ·
@@ -49,8 +49,8 @@ does not check whether a real deployment satisfies those premises.
 
 | Path | Role | Edit policy |
 |---|---|---|
-| <code>formal/</code> | Exact Zenodo 1.0 artifact bytes | Do not edit. Publish a new artifact version instead. |
-| <code>paper/</code> | Exact arXiv v4 source and PDF | Do not edit in place. Refresh only from a new public arXiv version. |
+| <code>formal/</code> | Exact Zenodo 1.0.1 artifact bytes | Do not edit. Publish a new artifact version instead. |
+| <code>paper/</code> | Exact arXiv v5 source and PDF | Do not edit in place. Refresh only from a new public arXiv version. |
 | <code>README.md</code>, <code>docs/</code>, this file | Derived orientation | May be clarified if every claim remains traceable to the frozen sources. |
 | <code>CITATION.cff</code> | Repository citation metadata | Update only when the public paper or artifact record changes. |
 
@@ -112,8 +112,8 @@ reminders, read <code>formal/THEOREM_INDEX.md</code>.
 | "Reading downstream contents escapes the bound." | The positive theorem reads an authoritative per-operation accepted record. Current contents can merge, overwrite, or omit the relevant history. |
 | "The sink read remains true after it is taken." | In-flight arrivals and competing recoverers can make it stale. T6 and T8 impose distinct acceptance-side disciplines. |
 | "The Wire Bound covers every policy unable to read the network." | T5 is scoped to channel-blind batch selectors inserted into one fixed unfenced re-drive relation at the designed pair. |
-| "Ordering two recoverers is sufficient." | T7's full scope is subtle. The loose grammar's duplicate witness uses a zombie fire; the phase-ordered addendum changes the boundary and does not establish the same for-all conclusion. |
-| "The arrival fence is free." | Corollary 6.1 proves rescue conversion: rejecting a stale duplicate can also drop an old request that would have rescued missing work. |
+| "Ordering two recoverers is sufficient." | T7's full scope is subtle. The loose grammar's duplicate witness uses a recoverer that sends without completing its store repair; the phase-ordered addendum changes the boundary and does not establish the same for-all conclusion. |
+| "The arrival fence is free." | Corollary 6.1 (Rejection of later work) proves the cost: rejecting a stale duplicate can also drop an old request that would have delivered later work. |
 | "Fence raising may be split from the recovery delta." | T6's immediate exactness uses one atomic act that heals, lands the accepted delta, and raises the fence. |
 | "Exactly-once on the deduplicated view proves a consumer transaction." | T9's displayed identity is definitional on an absorbing permanent-memory deduplicated view; the substantive per-instance result has its own premises. |
 | "Truncated recovery is judged only against retained data." | T10 grades loss against the full journal specification while policies see only the retained view. |
@@ -122,12 +122,14 @@ reminders, read <code>formal/THEOREM_INDEX.md</code>.
 
 ## Artifact facts
 
-- Zenodo version DOI: <code>10.5281/zenodo.21734366</code>
+- Zenodo version DOI: <code>10.5281/zenodo.22700396</code>
 - Zenodo concept DOI: <code>10.5281/zenodo.21734365</code>
-- Version: <code>1.0</code>
-- Release date: <code>2026-08-01</code>
+- Version: <code>1.0.1</code>, a documentation-only update of version 1.0
+  (<code>10.5281/zenodo.21734366</code>); all 127 theory files are
+  byte-identical
+- Release date: <code>2026-09-11</code>
 - Archive SHA-256:
-  <code>b18fe3d6ad2a56f5f3269460ec8f87a83504ffbd006d10f3e8db25801bf3a713</code>
+  <code>5d04755739bc111a8a339e4c3f14941b84266e17d4191e79f83490003150ca29</code>
 - Eight Isabelle sessions, 127 theory files, three named build targets.
 - Verified with Isabelle2025-2 and
   <code>quick_and_dirty=false</code>.
@@ -148,7 +150,7 @@ pdflatex main
 pdfinfo machine-checked-dual-write-recovery.pdf
 ~~~
 
-Expected public PDF: 22 pages, letter size, five figures.
+Expected public PDF: 23 pages, letter size, five figures.
 
 ### Formal artifact
 
@@ -168,8 +170,8 @@ isabelle build -b -j 8 -o quick_and_dirty=false \
 ### Deposit fidelity
 
 ~~~bash
-curl -sL https://zenodo.org/records/21734366/files/Dual_Write_Recovery-1.0.tar.gz | tar xz
-diff -r Dual_Write_Recovery-1.0 formal
+curl -sL https://zenodo.org/records/22700396/files/Dual_Write_Recovery-1.0.1.tar.gz | tar xz
+diff -r Dual_Write_Recovery-1.0.1 formal
 ~~~
 
 No output from <code>diff</code> means byte identity.

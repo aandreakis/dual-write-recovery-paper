@@ -11,7 +11,7 @@ the result.
 
 ## Numbering
 
-The paper — *Machine-Checked Dual-Write Recovery from a Committed
+The paper — *Machine-Checked Dual-Write Recovery from a Commit
 Log* — numbers its principal results T1–T12 in narrative order, and
 every table and note below uses that numbering. The development's
 source history and some theory comments use an older historical
@@ -24,9 +24,9 @@ numbering; this map converts between the two.
 | T3 | Checkpoint Dilemma | Same-protocol checkpoint dilemma |
 | T4 | Sink-Reading Escape | T3 |
 | T5 | Wire Bound | T4 |
-| T6 | Arrival Fence (Cor. 6.1 rescue conversion; Cor. 6.2 residual-wire stability) | T5 + corollary rows |
+| T6 | Arrival Fence (Cor. 6.1 Rejection of later work; Cor. 6.2 residual-wire stability) | T5 + corollary rows |
 | T7 | Second-Recoverer Bound | T6 |
-| T8 | Completed-Claim Exactness (Lem. 7.1 claim-fence safety; Cor. 7.1 journal-grade endpoint equivalence) | Claim-fence safety and exactness |
+| T8 | Completed-Claim Exactness (Lem. 7.1 claim-fence safety; Cor. 7.1 journal-grade exactness (endpoint equivalence)) | Claim-fence safety and exactness |
 | T9 | Deduplicated-View Coverage Identity | T7 |
 | T10 | Truncation Dilemma | T8 |
 | T11 | Faithful-Image Equivalence | T9 |
@@ -40,10 +40,10 @@ numbering; this map converts between the two.
 | T4 Sink-Reading Escape | `sink_reading_escape_general` | `isabelle/dual_write_effect/Dual_Write_Effect_Dilemma.thy` |
 | T5 Wire Bound | `no_channel_blind_policy_escapes` | `isabelle/dual_write_effect/Dual_Write_Effect_Channel_Blind.thy` |
 | T6 Arrival Fence | `fenced_redrive_exactly_once`; packaged reachable-state citation form `fenced_redrive_reachable_package` (existence + heal + exactness at `f` + all-stale residual wire + arrive/lose-only continuation preservation under one premise list) | `isabelle/dual_write_effect/Dual_Write_Effect_Fencing.thy` |
-| Cor. 6.1 Rescue Conversion | `fence_rescue_conversion` | `isabelle/dual_write_effect/Dual_Write_Effect_Fencing.thy` |
+| Cor. 6.1 Rejection of later work | `fence_rescue_conversion` | `isabelle/dual_write_effect/Dual_Write_Effect_Fencing.thy` |
 | Cor. 6.2 Residual-Wire Stability | `fenced_redrive_all_stale`, `fenced_result_wire_preserves_eo` | `isabelle/dual_write_effect/Dual_Write_Effect_Fencing.thy` |
 | T7 Second-Recoverer Bound | `u_concurrent_recovery_dilemma`; two-horn practitioner form `u_concurrent_recovery_duplicate_or_lost` (the TT cell's proved duplicate exported); phase-ordered addendum: grammar `u_pair_steps_phased` / `u_oneshot_pair_extension_phased` with simulation `phased_extension_imp_extension` (per-run transport `phased_defeat_is_loose_defeat`), ordered silent-death defeat `u_ordered_silent_death_defeat`, and the ordering boundary `u_ordered_pair_exact_completion` / `u_ordered_dilemma_fails_at_rf_W` | `isabelle/dual_write_unified/DWU_Concurrent_Recovery.thy` |
-| T8 Completed-Claim Exactness (incl. Lem. 7.1 claim-fence safety, Cor. 7.1 journal-grade endpoint equivalence) | `u_fenced_multiwriter_discipline_safe`, `u_exactly_once_at_completed_claim`; journal-grade forms `permanent_source_journal_coincidence`, `u_exactly_once_at_completed_claim_journal`, `retention_sound_bridge`, `disciplined_retention_sound_journal_grade`, endpoint exchange-rate equivalence `journal_grade_iff_retained_grade_and_prefix_covered` (banked controls `journal_grade_divergence_control`, `cw4_completed_claim_journal_grade`) | `isabelle/dual_write_unified/DWU_Fenced_Discipline.thy`; `isabelle/dual_write_unified/DWU_Journal_Grade.thy` |
+| T8 Completed-Claim Exactness (incl. Lem. 7.1 claim-fence safety, Cor. 7.1 journal-grade exactness (endpoint equivalence)) | `u_fenced_multiwriter_discipline_safe`, `u_exactly_once_at_completed_claim`; journal-grade forms `permanent_source_journal_coincidence`, `u_exactly_once_at_completed_claim_journal`, `retention_sound_bridge`, `disciplined_retention_sound_journal_grade`, endpoint exchange-rate equivalence `journal_grade_iff_retained_grade_and_prefix_covered` (banked controls `journal_grade_divergence_control`, `cw4_completed_claim_journal_grade`) | `isabelle/dual_write_unified/DWU_Fenced_Discipline.thy`; `isabelle/dual_write_unified/DWU_Journal_Grade.thy` |
 | T9 Deduplicated-View Coverage Identity | `dedup_sink_exactly_once_iff_at_least_once` (definitional over the absorbing `remdups` view — the biconditional reduces to coverage); the substantive per-instance form is `dedup_sink_instance_exact_iff` (ascending-coordinate corollary) | `isabelle/dual_write_effect/Dual_Write_Effect_Exactly_Once.thy` |
 | T10 Truncation Dilemma | `u_truncation_recovery_dilemma`; two-horn practitioner form `u_truncation_fabricate_or_abandon` (the FABRICATE branch's proved `u_premature` exported) | `isabelle/dual_write_unified/DWU_Truncation.thy` |
 | T11 Faithful-Image Equivalence | `safe_iff_running_image_faithful` | `isabelle/dual_write_core/Dual_Write_Converse.thy` |

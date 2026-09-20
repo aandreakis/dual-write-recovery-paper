@@ -1,7 +1,7 @@
 # The twelve principal results
 
 This is a reader-oriented map for the paper
-"Machine-Checked Dual-Write Recovery from a Committed Log."
+"Machine-Checked Dual-Write Recovery from a Commit Log."
 
 The short titles below are handles, not formal statements. For citation or
 technical comparison, read the theorem in <code>paper/main.tex</code>, then
@@ -130,10 +130,10 @@ delta synchronously in the accepted record, and raises the acceptance fence.
 It is exact at its own frontier. Old in-flight requests then fail the
 generation test.
 
-**Corollary 6.1 - Rescue Conversion.**
+**Corollary 6.1 - Rejection of later work.**
 <code>fence_rescue_conversion</code> proves the price: the same fence that
 rejects a stale duplicate may also reject an old request that would have
-rescued missing work.
+delivered later work.
 
 **Corollary 6.2 - Residual-Wire Stability.**
 <code>fenced_redrive_all_stale</code> and
