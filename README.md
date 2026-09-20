@@ -96,7 +96,7 @@ identifier. This repository is a mirror.
 |---|---|---|
 | Current | [arXiv:2608.00501v5](https://arxiv.org/abs/2608.00501v5), 11 Sep 2026 | `1.0.1`, [10.5281/zenodo.22700396](https://doi.org/10.5281/zenodo.22700396), 11 Sep 2026 |
 | Previous | [v4](https://arxiv.org/abs/2608.00501v4), 13 Aug · [v3](https://arxiv.org/abs/2608.00501v3), 8 Aug · [v2](https://arxiv.org/abs/2608.00501v2), 4 Aug · [v1](https://arxiv.org/abs/2608.00501v1), 1 Aug | `1.0`, [10.5281/zenodo.21734366](https://doi.org/10.5281/zenodo.21734366), 1 Aug 2026 |
-| Always-latest artifact DOI | none | [10.5281/zenodo.21734365](https://doi.org/10.5281/zenodo.21734365) (concept DOI) |
+| Always latest | [arXiv:2608.00501](https://arxiv.org/abs/2608.00501) | [10.5281/zenodo.21734365](https://doi.org/10.5281/zenodo.21734365) (concept DOI) |
 
 The arXiv v5 paper cites the exact Zenodo version DOI
 `10.5281/zenodo.22700396`, and this repository's `formal/` tree is
@@ -140,9 +140,12 @@ GitHub's **Cite this repository** button reads [CITATION.cff](CITATION.cff).
 
 ## Licence
 
-- **Paper text and figures** (`paper/` and reader documentation): Creative
-  Commons Attribution 4.0 International, matching the arXiv posting. See
-  [LICENSES/CC-BY-4.0.txt](LICENSES/CC-BY-4.0.txt).
+- **Paper text and figures** (`paper/main.tex`, `paper/main.bbl`,
+  `paper/figures/` and reader documentation): Creative Commons Attribution 4.0
+  International, matching the arXiv posting. See
+  [LICENSES/CC-BY-4.0.txt](LICENSES/CC-BY-4.0.txt). `paper/acmart.cls` is the
+  ACM class file bundled with the arXiv submission. It keeps its own terms,
+  stated in its header.
 - **Isabelle/HOL development** (`formal/`): BSD 3-Clause. See
   [LICENSE](LICENSE), copied from the archived artifact.
 

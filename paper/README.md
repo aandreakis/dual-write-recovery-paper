@@ -38,4 +38,5 @@ for the exact public rebuild.
 - [DOI](https://doi.org/10.48550/arXiv.2608.00501)
 
 The paper text and figures are licensed CC BY 4.0, matching the arXiv
-posting.
+posting. <code>acmart.cls</code> is the ACM class file. It keeps its own
+terms, stated in its header.
