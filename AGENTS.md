@@ -108,7 +108,7 @@ reminders, read <code>formal/THEOREM_INDEX.md</code>.
 | Misreading | Correction |
 |---|---|
 | "The paper proves that every source-only recovery algorithm is impossible." | T1, T2, T3, T5, T7, and T10 quantify over named policy classes on constructed machines or schedules. Preserve those quantifiers. |
-| "A correct checkpoint is enough." | T3 includes the durable cursor in the equal local view. The missing fact is sink acceptance during the deliver-to-persist window. |
+| "A correct checkpoint is enough." | T3 includes the durable cursor in the equal local view by construction. The missing fact is sink acceptance during the deliver-to-persist window. |
 | "Reading downstream contents escapes the bound." | The positive theorem reads an authoritative per-operation accepted record. Current contents can merge, overwrite, or omit the relevant history. |
 | "The sink read remains true after it is taken." | In-flight arrivals and competing recoverers can make it stale. T6 and T8 impose distinct acceptance-side disciplines. |
 | "The Wire Bound covers every policy unable to read the network." | T5 is scoped to channel-blind batch selectors inserted into one fixed unfenced re-drive relation at the designed pair. |

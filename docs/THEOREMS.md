@@ -49,8 +49,8 @@ are defeated on one member.
 
 **Scope.** The theorem is about the modeled projections named in the
 statement. It does not say that every conceivable control plane is
-uninformative. Reading a durable sink acceptance record is outside this bound.
-That case is the subject of T4.
+uninformative. A durable sink acceptance record is on the escape side. That is
+the subject of T4.
 
 ## T3 - Checkpoint Dilemma
 
@@ -90,9 +90,9 @@ obligations minus the sink's accepted identities when the accepted record
 is authoritative, complete, current, and operations have stable
 distinguishing source coordinates.
 
-**Scope.** The theorem reads acceptance history. Current sink contents are not
-enough. Completeness and freshness are separate obligations. The theorem
-does not itself handle in-flight arrivals or concurrent recoverers. T5-T8
+**Scope.** The theorem reads acceptance history rather than current sink
+contents. Completeness and freshness are separate obligations. The theorem
+does not itself cover in-flight arrivals or concurrent recoverers. T5-T8
 address those hazards.
 
 ## T5 - Wire Bound
@@ -161,12 +161,12 @@ Unscoped post-resume preservation is false.
 recoverers that use the sink delta can jointly produce a duplicate or leave
 work owed within the theorem's schedule class.
 
-**Scope.** T7's pair grammar records final armed, fired, and healer sets.
-One duplicate witness relies on a member firing without its own heal. The
+**Scope.** T7's pair grammar records only the final armed, fired, and healer
+sets. One duplicate witness relies on a member firing without its own heal. The
 phase-ordered addendum proves ordered silent-death defeats and transports
-them to the loose grammar. However, the T7 conclusion is false at the landed
-witness if the ordered extension replaces the loose extension. Preserve this
-distinction.
+them to the loose grammar. However, the for-all conclusion of T7 is false at
+the landed witness if the ordered extension replaces the loose extension.
+Preserve this distinction.
 
 ## T8 - Completed-Claim Exactness
 
@@ -233,8 +233,8 @@ through the retained view but differ in the journal specification. A
 policy based only on retained history must fabricate, abandon, or enter the
 statement's unsafe branch.
 
-**Scope.** Loss is graded against the full journal specification. The policy
-sees only the retained view.
+**Scope.** Loss is graded against the full journal specification, while the
+policy sees only the retained view.
 
 ## T11 - Faithful-Image Equivalence
 
