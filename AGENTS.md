@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This repository is the public information hub for the paper
+This repository contains the artifact and manuscript sources for the paper
 "Machine-Checked Dual-Write Recovery from a Commit Log." It combines:
 
 - the exact arXiv v5 paper source and stamped PDF,
