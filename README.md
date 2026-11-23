@@ -2,6 +2,7 @@
 
 [![Paper (arXiv)](https://img.shields.io/badge/paper-arXiv%3A2608.00501-b31b1b)](https://arxiv.org/abs/2608.00501)
 [![Artifact 1.0.1 DOI](https://img.shields.io/badge/artifact-10.5281%2Fzenodo.22700396-1682D4)](https://doi.org/10.5281/zenodo.22700396)
+[![Blog Post](https://img.shields.io/badge/blog-aandreakis.com-0e7c66)](https://aandreakis.com/posts/change-data-capture-doesnt-solve-dual-writes)
 
 Sources for the paper **"Machine-Checked Dual-Write Recovery from a Commit
 Log"** (Andreas Andreakis, 2026) and the Isabelle/HOL development that
@@ -23,6 +24,7 @@ production system is verified. The kernel checks proofs from their assumptions.
 It cannot establish that a deployment satisfies them.
 
 **Links:** [paper on arXiv](https://arxiv.org/abs/2608.00501) ·
+[companion blog post](https://aandreakis.com/posts/change-data-capture-doesnt-solve-dual-writes) ·
 [archived artifact (Zenodo)](https://doi.org/10.5281/zenodo.22700396) ·
 [theorem scope notes](docs/THEOREMS.md) ·
 [paper-to-Isabelle map](formal/THEOREM_INDEX.md) ·
